@@ -45,6 +45,8 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
                     raise UpdateFailed(f"Login failed with status {resp.status}")
                 data = await resp.json()
                 self._token = data["token"]
+        except UpdateFailed:
+            raise
         except Exception as err:
             raise UpdateFailed(f"Login error: {err}") from err
 
@@ -56,9 +58,11 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
                 f"{API_BASE_URL}/consumo-actual", headers=headers
             ) as resp:
                 if resp.status == 401:
-                    self._token = None
-                    await self._login()
-                    return await self._fetch_consumo_actual()
+                    if self._token is not None:
+                        self._token = None
+                        await self._login()
+                        return await self._fetch_consumo_actual()
+                    raise UpdateFailed("Authentication failed after re-login")
                 if resp.status != 200:
                     raise UpdateFailed(f"API returned status {resp.status}")
                 data = await resp.json()
