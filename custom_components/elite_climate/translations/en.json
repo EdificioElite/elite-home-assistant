@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        },
+        "title": "Elite Climate"
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid email or password"
+    },
+    "abort": {
+      "already_configured": "This account is already configured"
+    }
+  }
+}
