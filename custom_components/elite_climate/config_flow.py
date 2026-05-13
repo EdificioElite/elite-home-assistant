@@ -3,6 +3,7 @@
 from typing import Any
 
 import voluptuous as vol
+from aiohttp import ClientError
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
@@ -33,14 +34,18 @@ class EliteClimateConfigFlow(ConfigFlow, domain=DOMAIN):
                     },
                 ) as resp:
                     if resp.status == 200:
-                        await self.async_set_unique_id(user_input[CONF_EMAIL])
+                        email_lower = user_input[CONF_EMAIL].lower()
+                        await self.async_set_unique_id(email_lower)
                         self._abort_if_unique_id_configured()
                         return self.async_create_entry(
-                            title=user_input[CONF_EMAIL], data=user_input
+                            title=email_lower, data=user_input
                         )
-                    errors["base"] = "invalid_auth"
-            except Exception:
-                errors["base"] = "invalid_auth"
+                    if resp.status in (401, 403):
+                        errors["base"] = "invalid_auth"
+                    else:
+                        errors["base"] = "cannot_connect"
+            except ClientError:
+                errors["base"] = "cannot_connect"
 
         return self.async_show_form(
             step_id="user",

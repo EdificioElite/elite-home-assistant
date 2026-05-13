@@ -10,7 +10,8 @@
       }
     },
     "error": {
-      "invalid_auth": "Invalid email or password"
+      "invalid_auth": "Invalid email or password",
+      "cannot_connect": "Cannot connect to Elite API"
     },
     "abort": {
       "already_configured": "This account is already configured"
