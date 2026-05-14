@@ -1,20 +1,33 @@
 """Tests for Elite Climate coordinator."""
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 from aiohttp import ClientError
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
 
+class MockResponse:
+    """Mock aiohttp response with real async context manager protocol."""
+
+    def __init__(self, status, json_data):
+        self.status = status
+        self._json_data = json_data
+
+    async def json(self):
+        return self._json_data
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *args):
+        pass
+
+
 async def test_login_success(hass, mock_api_session):
     from custom_components.elite_climate.coordinator import EliteClimateCoordinator
 
-    mock_resp = MagicMock()
-    mock_resp.status = 200
-    mock_resp.json = AsyncMock(return_value={"token": "jwt-token-123", "user": {"id": 1}})
-    mock_resp.__aenter__ = AsyncMock(return_value=mock_resp)
-    mock_resp.__aexit__ = AsyncMock(return_value=None)
+    mock_resp = MockResponse(200, {"token": "jwt-token-123", "user": {"id": 1}})
 
     mock_session = MagicMock()
     mock_session.post.return_value = mock_resp
@@ -29,10 +42,7 @@ async def test_login_success(hass, mock_api_session):
 async def test_login_failure(hass, mock_api_session):
     from custom_components.elite_climate.coordinator import EliteClimateCoordinator
 
-    mock_resp = MagicMock()
-    mock_resp.status = 401
-    mock_resp.__aenter__ = AsyncMock(return_value=mock_resp)
-    mock_resp.__aexit__ = AsyncMock(return_value=None)
+    mock_resp = MockResponse(401, None)
 
     mock_session = MagicMock()
     mock_session.post.return_value = mock_resp
@@ -46,9 +56,6 @@ async def test_login_failure(hass, mock_api_session):
 
 async def test_fetch_consumo_actual_success(hass, mock_api_session):
     from custom_components.elite_climate.coordinator import EliteClimateCoordinator
-
-    coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
-    coord._token = "jwt-123"
 
     sample_data = {
         "timestamp": "2026-05-13T20:00:00.000Z",
@@ -67,15 +74,14 @@ async def test_fetch_consumo_actual_success(hass, mock_api_session):
         "power_w": 1200,
     }
 
-    mock_resp = MagicMock()
-    mock_resp.status = 200
-    mock_resp.json = AsyncMock(return_value=sample_data)
-    mock_resp.__aenter__ = AsyncMock(return_value=mock_resp)
-    mock_resp.__aexit__ = AsyncMock(return_value=None)
+    mock_resp = MockResponse(200, sample_data)
 
     mock_session = MagicMock()
     mock_session.get.return_value = mock_resp
     mock_api_session.return_value = mock_session
+
+    coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
+    coord._token = "jwt-123"
 
     result = await coord._fetch_consumo_actual()
     assert result["kwh_calor"] == 1.234
@@ -89,11 +95,7 @@ async def test_fetch_null_data_keeps_previous(hass, mock_api_session):
     coord._token = "jwt-123"
     coord.data = {"power_w": 500}
 
-    mock_resp = MagicMock()
-    mock_resp.status = 200
-    mock_resp.json = AsyncMock(return_value=None)
-    mock_resp.__aenter__ = AsyncMock(return_value=mock_resp)
-    mock_resp.__aexit__ = AsyncMock(return_value=None)
+    mock_resp = MockResponse(200, None)
 
     mock_session = MagicMock()
     mock_session.get.return_value = mock_resp
@@ -121,29 +123,32 @@ async def test_fetch_network_error_keeps_previous(hass, mock_api_session):
 async def test_fetch_401_renews_token(hass, mock_api_session):
     from custom_components.elite_climate.coordinator import EliteClimateCoordinator
 
+    login_resp = MockResponse(200, {"token": "jwt-token-123", "user": {"id": 1}})
+    fetch_resp = MockResponse(200, {"power_w": 300, "kwh_calor": 1.0})
+
+    mock_session = MagicMock()
+    mock_session.post.return_value = login_resp
+    mock_session.get.return_value = fetch_resp
+    mock_api_session.return_value = mock_session
+
     coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
     coord._token = "expired-token"
 
-    original_login = coord._login
     original_fetch = coord._fetch_consumo_actual
 
-    call_count = {"login": 0, "fetch": 0}
-
-    async def login_side_effect():
-        call_count["login"] += 1
-        coord._token = "new-token"
+    call_count = {"fetch": 0}
 
     async def fetch_side_effect():
         call_count["fetch"] += 1
         if call_count["fetch"] == 1:
             coord._token = None
-            await original_login()
+            await coord._login()
             return await original_fetch()
         return {"power_w": 100}
 
-    coord._login = login_side_effect
     coord._fetch_consumo_actual = fetch_side_effect
 
     result = await coord._async_update_data()
-    assert result["power_w"] == 100
-    assert call_count["login"] >= 1
+    assert result["power_w"] == 300
+    assert coord._token == "jwt-token-123"
+    assert call_count["fetch"] == 1
