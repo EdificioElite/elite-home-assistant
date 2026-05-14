@@ -5,8 +5,7 @@
 The `main` branch is **protected**. Direct pushes are blocked. All changes must go through **Pull Requests**.
 
 ### Protection rules active:
-- **1 approving review required** before merge
-- **All CI checks must pass** (ruff, tests, hassfest)
+- **All CI checks must pass** (ruff, tests, hassfest) before merge
 - **No force pushes**
 - **No direct deletions**
 
@@ -29,7 +28,7 @@ The `main` branch is **protected**. Direct pushes are blocked. All changes must 
    gh pr create --title "feat: ..." --body "..."
    ```
 
-4. **Wait for review and CI** — merge is blocked until both pass.
+4. **Wait for CI to pass** — merge is blocked until all checks pass.
 
 ## Release Process
 

@@ -28,7 +28,7 @@ CI runs `ruff check custom_components/`, `pytest tests/`, and `hassfest` on ever
 
 ## Branch protection (DO NOT push to main)
 
-The `main` branch is **protected**. Direct pushes are rejected. All changes must go through **feature branches + Pull Requests** with at least 1 approving review. See `CONTRIBUTING.md` for the full workflow.
+The `main` branch is **protected**. Direct pushes are rejected. All changes must go through **feature branches + Pull Requests** (no approving reviews required, but CI must pass). See `CONTRIBUTING.md` for the full workflow.
 
 ## Release workflow
 
