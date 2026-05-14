@@ -70,6 +70,8 @@ jobs:
           PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
           
           echo "Waiting for CI checks on PR #$PR_NUMBER..."
+          # Allow CI to start before checking
+          sleep 30
           gh pr checks "$PR_NUMBER" --watch --interval 30
           
           echo "CI passed. Merging PR #$PR_NUMBER..."
