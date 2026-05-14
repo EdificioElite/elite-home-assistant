@@ -47,7 +47,10 @@ class EliteClimateRunningSensor(BinarySensorEntity):
         power_w = self.coordinator.data.get("power_w")
         if power_w is None:
             return None
-        return power_w > 0
+        try:
+            return float(power_w) > 0
+        except (ValueError, TypeError):
+            return None
 
     @property
     def available(self) -> bool:
