@@ -50,7 +50,7 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
         except Exception as err:
             raise UpdateFailed(f"Login error: {err}") from err
 
-    async def _fetch_consumo_actual(self) -> dict:
+    async def _fetch_consumo_actual(self, _reauthed: bool = False) -> dict:
         """Fetch current consumption data, handling 401 re-auth."""
         headers = {"Authorization": f"Bearer {self._token}"}
         try:
@@ -58,10 +58,10 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
                 f"{API_BASE_URL}/consumo-actual", headers=headers
             ) as resp:
                 if resp.status == 401:
-                    if self._token is not None:
+                    if not _reauthed:
                         self._token = None
                         await self._login()
-                        return await self._fetch_consumo_actual()
+                        return await self._fetch_consumo_actual(_reauthed=True)
                     raise UpdateFailed("Authentication failed after re-login")
                 if resp.status != 200:
                     raise UpdateFailed(f"API returned status {resp.status}")
@@ -72,6 +72,8 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
                         return self.data
                     raise UpdateFailed("No data available from API")
                 return data
+        except UpdateFailed:
+            raise
         except Exception as err:
             if self.data is not None:
                 _LOGGER.warning("Error fetching data, keeping previous values: %s", err)

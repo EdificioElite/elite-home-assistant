@@ -8,7 +8,7 @@ Home Assistant integration for Edificio Elite residents. Monitors aerothermal cl
 
 ## Features
 
-- **15 entities** across two devices: Climatización and Agua
+- **16 entities (15 sensors + 1 binary sensor)** across two devices: Climatización and Agua
 - **Automatic polling** every 5 minutes
 - **JWT authentication** with automatic token renewal
 - **HACS compatible** — install directly from the HACS store

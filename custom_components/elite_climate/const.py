@@ -4,9 +4,6 @@ DOMAIN = "elite_climate"
 API_BASE_URL = "https://api.edificioelite.com/api"
 SCAN_INTERVAL = 300
 
-CONF_EMAIL = "email"
-CONF_PASSWORD = "password"
-
 DEVICE_CLIMATIZACION = "climatizacion"
 DEVICE_AGUA = "agua"
 
