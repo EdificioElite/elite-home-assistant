@@ -37,7 +37,7 @@ CLIMATIZACION_SENSORS = [
     },
     {
         "key": "kwh_calor_abs",
-        "name": "Energía calefacción (acumulado)",
+        "name": "Energía calefacción (contador)",
         "field": "kwh_calor_abs",
         "device_class": "energy",
         "state_class": "total_increasing",
@@ -46,7 +46,7 @@ CLIMATIZACION_SENSORS = [
     },
     {
         "key": "kwh_frio_abs",
-        "name": "Energía refrigeración (acumulado)",
+        "name": "Energía refrigeración (contador)",
         "field": "kwh_frio_abs",
         "device_class": "energy",
         "state_class": "total_increasing",
@@ -121,7 +121,7 @@ AGUA_SENSORS = [
     },
     {
         "key": "m3_acs_abs",
-        "name": "Consumo ACS (acumulado)",
+        "name": "Consumo ACS (contador)",
         "field": "m3_acs_abs",
         "device_class": "water",
         "state_class": "total_increasing",
