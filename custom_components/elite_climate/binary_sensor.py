@@ -1,9 +1,6 @@
 """Binary sensor platform for Elite Climate integration."""
 
-from homeassistant.components.binary_sensor import (
-    BinarySensorDeviceClass,
-    BinarySensorEntity,
-)
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -28,7 +25,7 @@ class EliteClimateRunningSensor(BinarySensorEntity):
     _attr_should_poll = False
     _attr_unique_id = f"{DEVICE_CLIMATIZACION}_is_running"
     _attr_name = "Climatización encendida"
-    _attr_device_class = BinarySensorDeviceClass.RUNNING
+    # No device_class to show generic On/Off states
     _attr_device_info = DeviceInfo(
         identifiers={(DOMAIN, DEVICE_CLIMATIZACION)},
         name="Climatización",
