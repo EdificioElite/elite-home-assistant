@@ -8,7 +8,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Integración de Home Assistant para residentes de Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS).
+Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS).
 
 > 🌐 **Idiomas:** [Español](README.md) · [English](README.en.md)
 

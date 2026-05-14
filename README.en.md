@@ -8,7 +8,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Home Assistant integration for Edificio Elite residents. Monitors aerothermal climate control (heating / cooling) and hot water (DHW) consumption in real time.
+Home Assistant integration for residents of Edificio Elite. Monitors aerothermal climate control (heating / cooling) and hot water (DHW) consumption in real time.
 
 > 🌐 **Languages:** [Español](README.md) · [English](README.en.md)
 
