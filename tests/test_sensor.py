@@ -95,7 +95,7 @@ async def test_last_update_timestamp(hass: HomeAssistant) -> None:
         sensor_def=sensor_def,
     )
 
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     assert isinstance(sensor.native_value, datetime)
     assert sensor.native_value.year == 2026

@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: home-assistant/actions/hassfest@latest
+      - uses: home-assistant/actions/hassfest@master
 
   lint:
     name: Lint with ruff
