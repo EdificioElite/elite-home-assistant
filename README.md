@@ -63,7 +63,8 @@ Copy the `custom_components/elite_climate/` folder into your Home Assistant `cus
 
 1. Go to **Settings** → **Devices & Services** → **Add Integration**
 2. Search for "Elite Climate"
-3. Enter your Edificio Elite email and password
+3. Enter your Edificio Elite email and password  
+   _(same credentials you use to log in at [edificioelite.com](https://www.edificioelite.com/))_
 4. Click submit — the integration will start polling immediately
 
 ## Requirements
