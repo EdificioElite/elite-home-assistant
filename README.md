@@ -2,72 +2,74 @@
   <img src="assets/Logotipo.png" alt="Elite Climate Logo" width="120">
 </p>
 
-# Elite Climate for Home Assistant
+# Elite Climate para Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Home Assistant integration for Edificio Elite residents. Monitors aerothermal climate control (heating / cooling) and hot water (ACS) consumption in real time.
+Integración de Home Assistant para residentes de Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS).
 
-## Features
+> 🌐 **Idiomas:** [Español](README.md) · [English](README.en.md)
 
-- **16 entities (15 sensors + 1 binary sensor)** across two devices: Climatización and Agua
-- **Automatic polling** every 5 minutes
-- **JWT authentication** with automatic token renewal
-- **HACS compatible** — install directly from the HACS store
-- **Config flow UI** — no YAML editing required
+## Características
 
-## Entities
+- **16 entidades (15 sensores + 1 sensor binario)** repartidos en dos dispositivos: Climatización y Agua
+- **Actualización automática** cada 5 minutos
+- **Autenticación JWT** con renovación automática de token
+- **Compatible con HACS** — instálalo directamente desde la tienda de HACS
+- **Config flow UI** — no es necesario editar YAML
+
+## Entidades
 
 ### Climatización
 
-| Sensor | Unit | Description |
+| Sensor | Unidad | Descripción |
 |---|---|---|
-| Última actualización | — | Timestamp of last data fetch |
-| Energía calefacción | kWh | Heating energy since last reading |
-| Energía refrigeración | kWh | Cooling energy since last reading |
-| Energía calefacción (acumulado) | kWh | Cumulative heating energy |
-| Energía refrigeración (acumulado) | kWh | Cumulative cooling energy |
-| Energía calefacción (este mes) | kWh | Heating energy since month start |
-| Energía refrigeración (este mes) | kWh | Cooling energy since month start |
-| Tª impulsión | °C | Flow temperature |
-| Tª retorno | °C | Return temperature |
-| Potencia actual | W | Current power consumption |
-| Climatización encendida | — | Binary sensor: on when power > 0 |
+| Última actualización | — | Marca de tiempo de la última actualización |
+| Energía calefacción | kWh | Energía de calefacción desde la última lectura |
+| Energía refrigeración | kWh | Energía de refrigeración desde la última lectura |
+| Energía calefacción (contador) | kWh | Energía de calefacción acumulada |
+| Energía refrigeración (contador) | kWh | Energía de refrigeración acumulada |
+| Energía calefacción (este mes) | kWh | Energía de calefacción desde el inicio del mes |
+| Energía refrigeración (este mes) | kWh | Energía de refrigeración desde el inicio del mes |
+| Tª impulsión | °C | Temperatura de impulsión |
+| Tª retorno | °C | Temperatura de retorno |
+| Potencia actual | W | Consumo de potencia actual |
+| Climatización encendida | — | Sensor binario: activo cuando la potencia > 0 |
 
 ### Agua
 
-| Sensor | Unit | Description |
+| Sensor | Unidad | Descripción |
 |---|---|---|
-| Consumo ACS | m³ | Hot water since last reading |
-| Energía ACS | kWh | Hot water energy equivalent |
-| Consumo ACS (acumulado) | m³ | Cumulative hot water |
-| Consumo ACS (este mes) | m³ | Hot water since month start |
+| Consumo ACS | m³ | Agua caliente desde la última lectura |
+| Energía ACS | kWh | Equivalente energético del agua caliente |
+| Consumo ACS (contador) | m³ | Agua caliente acumulada |
+| Consumo ACS (este mes) | m³ | Agua caliente desde el inicio del mes |
 
-## Installation
+## Instalación
 
-### Via HACS (recommended)
+### Mediante HACS (recomendado)
 
-1. Open HACS in Home Assistant
-2. Go to **Integrations** → **⋮** → **Custom repositories**
-3. Paste `https://github.com/EdificioElite/elite-home-assistant` and select **Integration**
-4. Click **Add**, then find "Elite Climate" and install it
-5. Restart Home Assistant
+1. Abre HACS en Home Assistant
+2. Ve a **Integraciones** → **⋮** → **Repositorios personalizados**
+3. Pega `https://github.com/EdificioElite/elite-home-assistant` y selecciona **Integration**
+4. Haz clic en **Añadir**, luego busca "Elite Climate" e instálala
+5. Reinicia Home Assistant
 
 ### Manual
 
-Copy the `custom_components/elite_climate/` folder into your Home Assistant `custom_components/` directory.
+Copia la carpeta `custom_components/elite_climate/` en el directorio `custom_components/` de tu Home Assistant.
 
-## Configuration
+## Configuración
 
-1. Go to **Settings** → **Devices & Services** → **Add Integration**
-2. Search for "Elite Climate"
-3. Enter your Edificio Elite email and password  
-   _(same credentials you use to log in at [edificioelite.com](https://www.edificioelite.com/))_
-4. Click submit — the integration will start polling immediately
+1. Ve a **Configuración** → **Dispositivos y servicios** → **Añadir integración**
+2. Busca "Elite Climate"
+3. Introduce tu email y contraseña de Edificio Elite  
+   _(las mismas credenciales que usas para iniciar sesión en [edificioelite.com](https://www.edificioelite.com/))_
+4. Haz clic en enviar — la integración comenzará a consultar los datos inmediatamente
 
-## Requirements
+## Requisitos
 
-- Home Assistant 2024.1 or newer
-- A valid Edificio Elite account
+- Home Assistant 2024.1 o superior
+- Una cuenta válida de Edificio Elite
