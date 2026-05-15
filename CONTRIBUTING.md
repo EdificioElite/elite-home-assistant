@@ -32,13 +32,15 @@ The `main` branch is **protected**. Direct pushes are blocked. All changes must 
 
 ## Release Process
 
-**Never bump versions manually.** The release workflow handles it:
+1. **Bump the version** in a PR (example commit message: `chore: bump version to 0.3.0`):
+   - Edit `custom_components/elite_climate/manifest.json` and update the `"version"` field
+   - Create a PR, wait for CI, and merge it
 
-```bash
-gh workflow run Release -f version_bump=patch   # or minor / major
-```
-
-This updates `manifest.json`, creates a tag, and publishes a GitHub Release.
+2. **Run the release workflow**:
+   ```bash
+   gh workflow run Release
+   ```
+   This reads the current version from `manifest.json`, creates a tag, and publishes a GitHub Release.
 
 ## Code Standards
 
