@@ -39,7 +39,7 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
         try:
             async with self._session.post(
                 f"{API_BASE_URL}/auth/login",
-                json={"email": self._email, "password": self._password},
+                json={"email": self._email, "password": self._password, "source": "home-assistant"},
             ) as resp:
                 if resp.status != 200:
                     raise UpdateFailed(f"Login failed with status {resp.status}")

@@ -31,6 +31,7 @@ class EliteClimateConfigFlow(ConfigFlow, domain=DOMAIN):
                     json={
                         "email": user_input[CONF_EMAIL],
                         "password": user_input[CONF_PASSWORD],
+                        "source": "home-assistant",
                     },
                 ) as resp:
                     if resp.status == 200:

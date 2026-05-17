@@ -51,6 +51,10 @@ async def test_config_flow_success(hass: HomeAssistant) -> None:
     assert result["data"][CONF_EMAIL] == "test@example.com"
     assert result["data"][CONF_PASSWORD] == "secret"
 
+    mock_session.post.assert_called_once()
+    _, kwargs = mock_session.post.call_args
+    assert kwargs["json"]["source"] == "home-assistant"
+
 
 async def test_config_flow_invalid_auth(hass: HomeAssistant) -> None:
     """Test config flow with invalid credentials."""
