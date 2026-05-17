@@ -38,6 +38,10 @@ async def test_login_success(hass, mock_api_session):
 
     assert coord._token == "jwt-token-123"
 
+    mock_session.post.assert_called_once()
+    _, kwargs = mock_session.post.call_args
+    assert kwargs["json"]["source"] == "home-assistant"
+
 
 async def test_login_failure(hass, mock_api_session):
     from custom_components.elite_climate.coordinator import EliteClimateCoordinator
