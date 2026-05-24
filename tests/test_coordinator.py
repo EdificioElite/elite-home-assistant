@@ -76,6 +76,7 @@ async def test_fetch_consumo_actual_success(hass, mock_api_session):
         "temp_impulsion": 35.5,
         "temp_retorno": 30.2,
         "power_w": 1200,
+        "modo": "calefaccion",
     }
 
     mock_resp = MockResponse(200, sample_data)

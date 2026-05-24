@@ -98,6 +98,15 @@ CLIMATIZACION_SENSORS = [
         "unit": "W",
         "icon": "mdi:flash",
     },
+    {
+        "key": "modo",
+        "name": "Modo",
+        "field": "modo",
+        "device_class": None,
+        "state_class": None,
+        "unit": None,
+        "icon": "mdi:heat-pump",
+    },
 ]
 
 AGUA_SENSORS = [
