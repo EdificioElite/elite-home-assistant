@@ -10,12 +10,16 @@ from homeassistant.helpers.update_coordinator import UpdateFailed
 class MockResponse:
     """Mock aiohttp response with real async context manager protocol."""
 
-    def __init__(self, status, json_data):
+    def __init__(self, status, json_data, text_data=None):
         self.status = status
         self._json_data = json_data
+        self._text_data = text_data
 
     async def json(self):
         return self._json_data
+
+    async def text(self):
+        return self._text_data
 
     async def __aenter__(self):
         return self
