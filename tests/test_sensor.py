@@ -99,3 +99,33 @@ async def test_last_update_timestamp(hass: HomeAssistant) -> None:
 
     assert isinstance(sensor.native_value, datetime)
     assert sensor.native_value.year == 2026
+
+
+async def test_modo_sensor(hass: HomeAssistant) -> None:
+    """Test the modo sensor returns the mode string from the API."""
+    from custom_components.elite_climate.sensor import EliteClimateSensor
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {"modo": "refrigeracion"}
+    coordinator.async_add_listener = MagicMock()
+
+    sensor_def = {
+        "key": "modo",
+        "name": "Modo",
+        "field": "modo",
+        "device_class": None,
+        "state_class": None,
+        "unit": None,
+        "icon": "mdi:heat-pump",
+    }
+
+    sensor = EliteClimateSensor(
+        coordinator=coordinator,
+        device_id="climatizacion",
+        device_name="Climatización",
+        sensor_def=sensor_def,
+    )
+
+    assert sensor.native_value == "refrigeracion"
+    assert sensor.available is True
