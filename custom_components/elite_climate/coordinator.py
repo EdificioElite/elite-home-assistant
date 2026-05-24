@@ -41,8 +41,18 @@ class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
                 f"{API_BASE_URL}/auth/login",
                 json={"email": self._email, "password": self._password, "source": "home-assistant"},
             ) as resp:
+                if resp.status == 429:
+                    text = await resp.text()
+                    _LOGGER.warning("Login rate-limited by API: %s", text)
+                    raise UpdateFailed("Login temporarily blocked (rate limit), will retry")
+                if resp.status in (401, 403):
+                    text = await resp.text()
+                    _LOGGER.error("Login rejected (status %s): %s", resp.status, text)
+                    raise UpdateFailed(f"Login failed with status {resp.status}: {text}")
                 if resp.status != 200:
-                    raise UpdateFailed(f"Login failed with status {resp.status}")
+                    text = await resp.text()
+                    _LOGGER.error("Login failed with unexpected status %s: %s", resp.status, text)
+                    raise UpdateFailed(f"Login failed with status {resp.status}: {text}")
                 data = await resp.json()
                 self._token = data["token"]
         except UpdateFailed:
