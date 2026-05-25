@@ -14,7 +14,7 @@ Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en
 
 ## Características
 
-- **16 entidades (15 sensores + 1 sensor binario)** repartidos en dos dispositivos: Climatización y Agua
+- **17 entidades (16 sensores + 1 sensor binario)** repartidos en dos dispositivos: Climatización y Agua
 - **Actualización automática** cada 5 minutos
 - **Autenticación JWT** con renovación automática de token
 - **Compatible con HACS** — instálalo directamente desde la tienda de HACS
@@ -44,6 +44,7 @@ Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en
 |---|---|---|
 | Consumo ACS | m³ | Agua caliente desde la última lectura |
 | Energía ACS | kWh | Equivalente energético del agua caliente |
+| Energía ACS (contador) | kWh | Energía ACS acumulada (calculada: m³ × 46.5) |
 | Consumo ACS (contador) | m³ | Agua caliente acumulada |
 | Consumo ACS (este mes) | m³ | Agua caliente desde el inicio del mes |
 

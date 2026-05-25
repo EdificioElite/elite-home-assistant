@@ -14,7 +14,7 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 
 ## Features
 
-- **16 entities (15 sensors + 1 binary sensor)** across two devices: Climatización and Agua
+- **17 entities (16 sensors + 1 binary sensor)** across two devices: Climatización and Agua
 - **Automatic polling** every 5 minutes
 - **JWT authentication** with automatic token renewal
 - **HACS compatible** — install directly from the HACS store
@@ -44,6 +44,7 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 |---|---|---|
 | Consumo ACS | m³ | Hot water since last reading |
 | Energía ACS | kWh | Hot water energy equivalent |
+| Energía ACS (contador) | kWh | Cumulative ACS energy (computed: m³ × 46.5) |
 | Consumo ACS (contador) | m³ | Cumulative hot water |
 | Consumo ACS (este mes) | m³ | Hot water since month start |
 

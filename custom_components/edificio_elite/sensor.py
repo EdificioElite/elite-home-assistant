@@ -115,6 +115,8 @@ class EliteClimateSensor(SensorEntity):
         """Return the sensor value from coordinator data."""
         if self.coordinator.data is None:
             return None
+        if "compute" in self._sensor_def:
+            return self._sensor_def["compute"](self.coordinator.data)
         field = self._sensor_def["field"]
         value = self.coordinator.data.get(field)
         if self._sensor_def["device_class"] == "timestamp" and value:
