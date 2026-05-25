@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/Logotipo.png" alt="Elite Climate Logo" width="120">
+  <img src="assets/Logotipo.png" alt="Edificio Elite Logo" width="120">
 </p>
 
-# Elite Climate para Home Assistant
+# Edificio Elite para Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
@@ -54,17 +54,17 @@ Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en
 1. Abre HACS en Home Assistant
 2. Ve a **Integraciones** → **⋮** → **Repositorios personalizados**
 3. Pega `https://github.com/EdificioElite/elite-home-assistant` y selecciona **Integration**
-4. Haz clic en **Añadir**, luego busca "Elite Climate" e instálala
+4. Haz clic en **Añadir**, luego busca "Edificio Elite" e instálala
 5. Reinicia Home Assistant
 
 ### Manual
 
-Copia la carpeta `custom_components/elite_climate/` en el directorio `custom_components/` de tu Home Assistant.
+Copia la carpeta `custom_components/edificio_elite/` en el directorio `custom_components/` de tu Home Assistant.
 
 ## Configuración
 
 1. Ve a **Configuración** → **Dispositivos y servicios** → **Añadir integración**
-2. Busca "Elite Climate"
+2. Busca "Edificio Elite"
 3. Introduce tu email y contraseña de Edificio Elite  
    _(las mismas credenciales que usas para iniciar sesión en [edificioelite.com](https://www.edificioelite.com/))_
 4. Haz clic en enviar — la integración comenzará a consultar los datos inmediatamente

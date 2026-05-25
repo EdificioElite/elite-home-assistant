@@ -1,4 +1,4 @@
-"""Tests for Elite Climate coordinator."""
+"""Tests for Edificio Elite coordinator."""
 
 from unittest.mock import MagicMock
 
@@ -29,7 +29,7 @@ class MockResponse:
 
 
 async def test_login_success(hass, mock_api_session):
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     mock_resp = MockResponse(200, {"token": "jwt-token-123", "user": {"id": 1}})
 
@@ -48,7 +48,7 @@ async def test_login_success(hass, mock_api_session):
 
 
 async def test_login_failure(hass, mock_api_session):
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     mock_resp = MockResponse(401, None)
 
@@ -63,7 +63,7 @@ async def test_login_failure(hass, mock_api_session):
 
 
 async def test_fetch_consumo_actual_success(hass, mock_api_session):
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     sample_data = {
         "timestamp": "2026-05-13T20:00:00.000Z",
@@ -98,11 +98,7 @@ async def test_fetch_consumo_actual_success(hass, mock_api_session):
 
 
 async def test_fetch_null_data_keeps_previous(hass, mock_api_session):
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
-
-    coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
-    coord._token = "jwt-123"
-    coord.data = {"power_w": 500}
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     mock_resp = MockResponse(200, None)
 
@@ -110,27 +106,31 @@ async def test_fetch_null_data_keeps_previous(hass, mock_api_session):
     mock_session.get.return_value = mock_resp
     mock_api_session.return_value = mock_session
 
+    coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
+    coord._token = "jwt-123"
+    coord.data = {"power_w": 500}
+
     result = await coord._fetch_consumo_actual()
     assert result["power_w"] == 500
 
 
 async def test_fetch_network_error_keeps_previous(hass, mock_api_session):
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
-
-    coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
-    coord._token = "jwt-123"
-    coord.data = {"power_w": 800}
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     mock_session = MagicMock()
     mock_session.get.side_effect = ClientError("Connection refused")
     mock_api_session.return_value = mock_session
+
+    coord = EliteClimateCoordinator(hass, email="test@example.com", password="pass")
+    coord._token = "jwt-123"
+    coord.data = {"power_w": 800}
 
     result = await coord._fetch_consumo_actual()
     assert result["power_w"] == 800
 
 
 async def test_fetch_401_renews_token(hass, mock_api_session):
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     login_resp = MockResponse(200, {"token": "jwt-token-123", "user": {"id": 1}})
     fetch_resp = MockResponse(200, {"power_w": 300, "kwh_calor": 1.0})

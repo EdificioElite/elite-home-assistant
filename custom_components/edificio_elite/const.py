@@ -1,6 +1,6 @@
-"""Constants for the Elite Climate integration."""
+"""Constants for the Edificio Elite integration."""
 
-DOMAIN = "elite_climate"
+DOMAIN = "edificio_elite"
 API_BASE_URL = "https://api.edificioelite.com/api"
 SCAN_INTERVAL = 300
 

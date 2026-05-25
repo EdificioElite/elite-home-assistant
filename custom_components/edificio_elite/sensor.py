@@ -1,4 +1,4 @@
-"""Sensor platform for Elite Climate integration."""
+"""Sensor platform for Edificio Elite integration."""
 
 from datetime import datetime
 from typing import Any
@@ -51,7 +51,7 @@ UNIT_MAP: dict[str | None, str | None] = {
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    """Set up Elite Climate sensors."""
+    """Set up Edificio Elite sensors."""
     coordinator: EliteClimateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     entities: list[SensorEntity] = []
@@ -80,7 +80,7 @@ async def async_setup_entry(
 
 
 class EliteClimateSensor(SensorEntity):
-    """Sensor for a single Elite Climate data point."""
+    """Sensor for a single Edificio Elite data point."""
 
     _attr_has_entity_name = True
     _attr_should_poll = False

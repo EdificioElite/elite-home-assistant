@@ -1,4 +1,4 @@
-"""Tests for Elite Climate sensors."""
+"""Tests for Edificio Elite sensors."""
 
 from unittest.mock import MagicMock
 
@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 
 async def test_sensor_values(hass: HomeAssistant) -> None:
     """Test that sensors return correct values from coordinator data."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -42,7 +42,7 @@ async def test_sensor_values(hass: HomeAssistant) -> None:
 
 async def test_sensor_null_data(hass: HomeAssistant) -> None:
     """Test sensor returns None when coordinator data is None."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -71,7 +71,7 @@ async def test_sensor_null_data(hass: HomeAssistant) -> None:
 
 async def test_last_update_timestamp(hass: HomeAssistant) -> None:
     """Test the last_update sensor parses timestamp correctly."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -103,7 +103,7 @@ async def test_last_update_timestamp(hass: HomeAssistant) -> None:
 
 async def test_modo_sensor(hass: HomeAssistant) -> None:
     """Test the modo sensor returns the mode string from the API."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True

@@ -1,4 +1,4 @@
-# Contributing to Elite Climate
+# Contributing to Edificio Elite
 
 ## Branch Protection
 
@@ -33,7 +33,7 @@ The `main` branch is **protected**. Direct pushes are blocked. All changes must 
 ## Release Process
 
 1. **Bump the version** in a PR (example commit message: `chore: bump version to 0.3.0`):
-   - Edit `custom_components/elite_climate/manifest.json` and update the `"version"` field
+   - Edit `custom_components/edificio_elite/manifest.json` and update the `"version"` field
    - Create a PR, wait for CI, and merge it
 
 2. **Run the release workflow**:
@@ -46,5 +46,5 @@ The `main` branch is **protected**. Direct pushes are blocked. All changes must 
 
 - Run `ruff check custom_components/` before committing
 - Tests must pass (`pytest tests/ -v`)
-- Home Assistant brand images go in `custom_components/elite_climate/brand/`
+- Home Assistant brand images go in `custom_components/edificio_elite/brand/`
 - Do not use `state_class: measurement` with `device_class: energy` or `water`

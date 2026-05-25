@@ -1,4 +1,4 @@
-"""Binary sensor platform for Elite Climate integration."""
+"""Binary sensor platform for Edificio Elite integration."""
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
@@ -13,7 +13,7 @@ from .coordinator import EliteClimateCoordinator
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    """Set up Elite Climate binary sensors."""
+    """Set up Edificio Elite binary sensors."""
     coordinator: EliteClimateCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([EliteClimateRunningSensor(coordinator)])
 

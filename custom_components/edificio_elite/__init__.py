@@ -1,4 +1,4 @@
-"""Elite Climate integration for Home Assistant."""
+"""Edificio Elite integration for Home Assistant."""
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, Platform
@@ -11,7 +11,7 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Elite Climate from a config entry."""
+    """Set up Edificio Elite from a config entry."""
     coordinator = EliteClimateCoordinator(
         hass,
         email=entry.data[CONF_EMAIL],

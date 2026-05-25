@@ -1,1 +1,1 @@
-"""Tests for Elite Climate Home Assistant integration."""
+"""Tests for Edificio Elite Home Assistant integration."""
