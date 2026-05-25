@@ -124,7 +124,7 @@ AGUA_SENSORS = [
         "name": "Energía ACS",
         "field": "kwh_acs",
         "device_class": "energy",
-        "state_class": None,
+        "state_class": "total_increasing",
         "unit": "kWh",
         "icon": "mdi:fire",
     },
