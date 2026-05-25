@@ -71,7 +71,7 @@ async def async_setup_entry(
             EliteClimateSensor(
                 coordinator=coordinator,
                 device_id=DEVICE_AGUA,
-                device_name="Agua",
+                device_name="Agua Caliente Sanitaria",
                 sensor_def=sensor_def,
             )
         )
