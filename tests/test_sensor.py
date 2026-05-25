@@ -146,7 +146,7 @@ async def test_computed_sensor(hass: HomeAssistant) -> None:
     sensor = EliteClimateSensor(
         coordinator=coordinator,
         device_id="agua",
-        device_name="Agua",
+        device_name="Agua Caliente Sanitaria",
         sensor_def=sensor_def,
     )
 
@@ -169,7 +169,7 @@ async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> N
     sensor = EliteClimateSensor(
         coordinator=coordinator,
         device_id="agua",
-        device_name="Agua",
+        device_name="Agua Caliente Sanitaria",
         sensor_def=sensor_def,
     )
 
