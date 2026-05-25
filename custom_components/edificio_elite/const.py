@@ -7,6 +7,8 @@ SCAN_INTERVAL = 300
 DEVICE_CLIMATIZACION = "climatizacion"
 DEVICE_AGUA = "agua"
 
+ACS_KWH_PER_M3 = 46.5
+
 CLIMATIZACION_SENSORS = [
     {
         "key": "last_update",
@@ -136,7 +138,11 @@ AGUA_SENSORS = [
         "state_class": "total_increasing",
         "unit": "kWh",
         "icon": "mdi:fire",
-        "compute": lambda data: round(data["m3_acs_abs"] * 46.5, 3) if data.get("m3_acs_abs") is not None else None,
+        "compute": lambda data: (
+            round(data["m3_acs_abs"] * ACS_KWH_PER_M3, 3)
+            if data.get("m3_acs_abs") is not None
+            else None
+        ),
     },
     {
         "key": "m3_acs_abs",
