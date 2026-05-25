@@ -24,8 +24,12 @@ jobs:
       - name: Create tag
         run: |
           VERSION=${{ steps.read_version.outputs.version }}
-          git tag "v${VERSION}"
-          git push origin "v${VERSION}"
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} already exists, skipping tag creation"
+          else
+            git tag "v${VERSION}"
+            git push origin "v${VERSION}"
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

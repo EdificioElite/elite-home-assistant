@@ -32,16 +32,16 @@ The `main` branch is **protected**. Direct pushes are rejected. All changes must
 
 ## Release workflow
 
-**Do NOT bump versions manually.** Use the GitHub Action:
+Two-step process:
 
-```bash
-gh workflow run Release -f version_bump=patch   # or minor / major
-```
+1. **Bump the version in a PR.** Edit `manifest.json` version field (or run `python scripts/bump_version.py <major|minor|patch>`). Create a PR, wait for CI, merge to `main`.
+2. **Trigger the release:**
+   ```bash
+   gh workflow run Release
+   ```
+   This reads the version from `manifest.json`, tags `vX.Y.Z`, and creates a GitHub Release with auto-generated notes.
 
-This:
-1. Runs `scripts/bump_version.py` to update `manifest.json`
-2. Commits, tags, and pushes `vX.Y.Z`
-3. Creates GitHub Release with auto-generated notes
+See `CONTRIBUTING.md` for the full workflow.
 
 ## Home Assistant brand images (critical for icons)
 
@@ -96,4 +96,4 @@ except (ValueError, TypeError):
 - Dependencies, config_flow flag
 - IoT class, documentation URL
 
-The version field is auto-updated by the release workflow.
+The version field is updated manually in a PR before triggering the release workflow.
