@@ -1,11 +1,13 @@
-"""Constants for the Elite Climate integration."""
+"""Constants for the Edificio Elite integration."""
 
-DOMAIN = "elite_climate"
+DOMAIN = "edificio_elite"
 API_BASE_URL = "https://api.edificioelite.com/api"
 SCAN_INTERVAL = 300
 
 DEVICE_CLIMATIZACION = "climatizacion"
 DEVICE_AGUA = "agua"
+
+ACS_KWH_PER_M3 = 46.5
 
 CLIMATIZACION_SENSORS = [
     {
@@ -127,6 +129,20 @@ AGUA_SENSORS = [
         "state_class": None,
         "unit": "kWh",
         "icon": "mdi:fire",
+    },
+    {
+        "key": "kwh_acs_abs",
+        "name": "Energía ACS (contador)",
+        "field": "m3_acs_abs",
+        "device_class": "energy",
+        "state_class": "total_increasing",
+        "unit": "kWh",
+        "icon": "mdi:fire",
+        "compute": lambda data: (
+            round(data["m3_acs_abs"] * ACS_KWH_PER_M3, 3)
+            if data.get("m3_acs_abs") is not None
+            else None
+        ),
     },
     {
         "key": "m3_acs_abs",

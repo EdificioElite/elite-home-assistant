@@ -1,4 +1,4 @@
-# AGENTS.md — Elite Climate (Home Assistant Custom Integration)
+# AGENTS.md — Edificio Elite (Home Assistant Custom Integration)
 
 ## What this is
 A Home Assistant custom integration for Edificio Elite residents. Monitors aerothermal climate and hot water consumption via JWT-authenticated cloud API.
@@ -6,7 +6,7 @@ A Home Assistant custom integration for Edificio Elite residents. Monitors aerot
 ## Project layout
 
 ```
-custom_components/elite_climate/   # Integration code (entry: __init__.py)
+custom_components/edificio_elite/   # Integration code (entry: __init__.py)
 tests/                             # pytest tests
 scripts/                           # bump_version.py (semver bump for manifest.json)
 assets/                            # Logo for README
@@ -48,7 +48,7 @@ This:
 Home Assistant 2026.3+ requires brand images inside the integration folder:
 
 ```
-custom_components/elite_climate/brand/
+custom_components/edificio_elite/brand/
   icon.png    # 256x256, RGB or RGBA PNG
   logo.png    # optional, rectangular logo
 ```
@@ -91,7 +91,7 @@ except (ValueError, TypeError):
 
 ## Manifest
 
-`custom_components/elite_climate/manifest.json` is the single source of truth for:
+`custom_components/edificio_elite/manifest.json` is the single source of truth for:
 - Domain, name, version
 - Dependencies, config_flow flag
 - IoT class, documentation URL

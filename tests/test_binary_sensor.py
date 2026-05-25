@@ -1,4 +1,4 @@
-"""Tests for Elite Climate binary sensor."""
+"""Tests for Edificio Elite binary sensor."""
 
 from unittest.mock import MagicMock
 
@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 
 async def test_is_running_true(hass: HomeAssistant) -> None:
     """Test binary sensor is on when power > 0."""
-    from custom_components.elite_climate.binary_sensor import EliteClimateRunningSensor
+    from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -22,7 +22,7 @@ async def test_is_running_true(hass: HomeAssistant) -> None:
 
 async def test_is_running_false(hass: HomeAssistant) -> None:
     """Test binary sensor is off when power == 0."""
-    from custom_components.elite_climate.binary_sensor import EliteClimateRunningSensor
+    from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -36,7 +36,7 @@ async def test_is_running_false(hass: HomeAssistant) -> None:
 
 async def test_is_running_null_when_no_data(hass: HomeAssistant) -> None:
     """Test binary sensor is None when data is missing."""
-    from custom_components.elite_climate.binary_sensor import EliteClimateRunningSensor
+    from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -50,7 +50,7 @@ async def test_is_running_null_when_no_data(hass: HomeAssistant) -> None:
 
 async def test_is_running_null_when_power_none(hass: HomeAssistant) -> None:
     """Test binary sensor is None when power_w is None."""
-    from custom_components.elite_climate.binary_sensor import EliteClimateRunningSensor
+    from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True

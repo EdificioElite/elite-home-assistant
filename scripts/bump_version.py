@@ -7,7 +7,7 @@ from pathlib import Path
 
 def bump_version(bump_type: str) -> str:
     """Bump semver version. Returns the new version string."""
-    manifest_path = Path("custom_components/elite_climate/manifest.json")
+    manifest_path = Path("custom_components/edificio_elite/manifest.json")
     manifest = json.loads(manifest_path.read_text())
     current = manifest["version"]
 

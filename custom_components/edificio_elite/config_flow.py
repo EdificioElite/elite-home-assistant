@@ -1,4 +1,4 @@
-"""Config flow for Elite Climate integration."""
+"""Config flow for Edificio Elite integration."""
 
 from typing import Any
 
@@ -13,7 +13,7 @@ from .const import API_BASE_URL, DOMAIN
 
 
 class EliteClimateConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Elite Climate."""
+    """Handle a config flow for Edificio Elite."""
 
     VERSION = 1
 

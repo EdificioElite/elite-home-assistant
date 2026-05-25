@@ -1,6 +1,6 @@
-"""Test fixtures for Elite Climate integration."""
+"""Test fixtures for Edificio Elite integration."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -15,14 +15,17 @@ def mock_frame_report_usage():
 @pytest.fixture
 def hass():
     """Provide a mock HomeAssistant instance."""
-    return MagicMock()
+    hass = MagicMock()
+    hass.config_entries.flow.async_init = AsyncMock()
+    hass.config_entries.flow.async_configure = AsyncMock()
+    return hass
 
 
 @pytest.fixture
 def mock_api_session():
     """Mock aiohttp client session."""
     with patch(
-        "custom_components.elite_climate.coordinator.async_get_clientsession"
+        "custom_components.edificio_elite.coordinator.async_get_clientsession"
     ) as mock_session:
         yield mock_session
 
@@ -30,7 +33,7 @@ def mock_api_session():
 @pytest.fixture
 def coordinator(hass, mock_api_session):
     """Create a coordinator instance with mocked session."""
-    from custom_components.elite_climate.coordinator import EliteClimateCoordinator
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
     coord = EliteClimateCoordinator(
         hass, email="test@example.com", password="testpass"

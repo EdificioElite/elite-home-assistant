@@ -18,7 +18,7 @@ jobs:
       - name: Read version from manifest
         id: read_version
         run: |
-          VERSION=$(python3 -c "import json; print(json.load(open('custom_components/elite_climate/manifest.json'))['version'])")
+          VERSION=$(python3 -c "import json; print(json.load(open('custom_components/edificio_elite/manifest.json'))['version'])")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create tag

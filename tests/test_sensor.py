@@ -1,4 +1,4 @@
-"""Tests for Elite Climate sensors."""
+"""Tests for Edificio Elite sensors."""
 
 from unittest.mock import MagicMock
 
@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 
 async def test_sensor_values(hass: HomeAssistant) -> None:
     """Test that sensors return correct values from coordinator data."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -42,7 +42,7 @@ async def test_sensor_values(hass: HomeAssistant) -> None:
 
 async def test_sensor_null_data(hass: HomeAssistant) -> None:
     """Test sensor returns None when coordinator data is None."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -71,7 +71,7 @@ async def test_sensor_null_data(hass: HomeAssistant) -> None:
 
 async def test_last_update_timestamp(hass: HomeAssistant) -> None:
     """Test the last_update sensor parses timestamp correctly."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -103,7 +103,7 @@ async def test_last_update_timestamp(hass: HomeAssistant) -> None:
 
 async def test_modo_sensor(hass: HomeAssistant) -> None:
     """Test the modo sensor returns the mode string from the API."""
-    from custom_components.elite_climate.sensor import EliteClimateSensor
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -129,3 +129,48 @@ async def test_modo_sensor(hass: HomeAssistant) -> None:
 
     assert sensor.native_value == "refrigeracion"
     assert sensor.available is True
+
+
+async def test_computed_sensor(hass: HomeAssistant) -> None:
+    """Test a computed sensor returns the correct derived value."""
+    from custom_components.edificio_elite.const import ACS_KWH_PER_M3, AGUA_SENSORS
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
+
+    sensor_def = next(s for s in AGUA_SENSORS if s["key"] == "kwh_acs_abs")
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {"m3_acs_abs": 10.0}
+    coordinator.async_add_listener = MagicMock()
+
+    sensor = EliteClimateSensor(
+        coordinator=coordinator,
+        device_id="agua",
+        device_name="Agua",
+        sensor_def=sensor_def,
+    )
+
+    assert sensor.native_value == round(10.0 * ACS_KWH_PER_M3, 3)
+    assert sensor.available is True
+
+
+async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> None:
+    """Test a computed sensor returns None when the source field is missing."""
+    from custom_components.edificio_elite.const import AGUA_SENSORS
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
+
+    sensor_def = next(s for s in AGUA_SENSORS if s["key"] == "kwh_acs_abs")
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {"m3_acs_abs": None}
+    coordinator.async_add_listener = MagicMock()
+
+    sensor = EliteClimateSensor(
+        coordinator=coordinator,
+        device_id="agua",
+        device_name="Agua",
+        sensor_def=sensor_def,
+    )
+
+    assert sensor.native_value is None

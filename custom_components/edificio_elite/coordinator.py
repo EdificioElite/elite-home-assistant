@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator for the Elite Climate integration."""
+"""DataUpdateCoordinator for the Edificio Elite integration."""
 
 import logging
 from datetime import timedelta

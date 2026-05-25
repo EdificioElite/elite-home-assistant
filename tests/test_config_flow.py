@@ -1,9 +1,7 @@
-"""Tests for Elite Climate config flow."""
+"""Tests for Edificio Elite config flow."""
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
-import pytest
-from homeassistant import config_entries, data_entry_flow
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 
@@ -24,29 +22,28 @@ class MockResponse:
 
 
 async def test_config_flow_success(hass: HomeAssistant) -> None:
-    """Test the full config flow with valid credentials."""
-    from custom_components.elite_climate.const import DOMAIN
+    """Test config flow with valid credentials."""
+    from custom_components.edificio_elite.config_flow import EliteClimateConfigFlow
 
     mock_resp = MockResponse(200)
     mock_session = MagicMock()
     mock_session.post.return_value = mock_resp
 
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(
-            "custom_components.elite_climate.config_flow.async_get_clientsession",
-            lambda hass: mock_session,
+    hass.config_entries.async_entry_for_domain_unique_id.return_value = None
+
+    with patch(
+        "custom_components.edificio_elite.config_flow.async_get_clientsession",
+        return_value=mock_session,
+    ):
+        flow = EliteClimateConfigFlow()
+        flow.hass = hass
+        flow.context = {}
+
+        result = await flow.async_step_user(
+            {CONF_EMAIL: "test@example.com", CONF_PASSWORD: "secret"}
         )
 
-        result = await hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": config_entries.SOURCE_USER}
-        )
-
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            {CONF_EMAIL: "test@example.com", CONF_PASSWORD: "secret"},
-        )
-
-    assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
+    assert result["type"] == "create_entry"
     assert result["title"] == "test@example.com"
     assert result["data"][CONF_EMAIL] == "test@example.com"
     assert result["data"][CONF_PASSWORD] == "secret"
@@ -58,26 +55,22 @@ async def test_config_flow_success(hass: HomeAssistant) -> None:
 
 async def test_config_flow_invalid_auth(hass: HomeAssistant) -> None:
     """Test config flow with invalid credentials."""
-    from custom_components.elite_climate.const import DOMAIN
+    from custom_components.edificio_elite.config_flow import EliteClimateConfigFlow
 
     mock_resp = MockResponse(401)
     mock_session = MagicMock()
     mock_session.post.return_value = mock_resp
 
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(
-            "custom_components.elite_climate.config_flow.async_get_clientsession",
-            lambda hass: mock_session,
+    with patch(
+        "custom_components.edificio_elite.config_flow.async_get_clientsession",
+        return_value=mock_session,
+    ):
+        flow = EliteClimateConfigFlow()
+        flow.hass = hass
+
+        result = await flow.async_step_user(
+            {CONF_EMAIL: "bad@example.com", CONF_PASSWORD: "wrong"}
         )
 
-        result = await hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": config_entries.SOURCE_USER}
-        )
-
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            {CONF_EMAIL: "bad@example.com", CONF_PASSWORD: "wrong"},
-        )
-
-    assert result["type"] == data_entry_flow.FlowResultType.FORM
+    assert result["type"] == "form"
     assert result["errors"] == {"base": "invalid_auth"}
