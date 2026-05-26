@@ -15,9 +15,11 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    AFS_SENSORS,
     AGUA_SENSORS,
     CLIMATIZACION_SENSORS,
-    DEVICE_AGUA,
+    DEVICE_ACS,
+    DEVICE_AFS,
     DEVICE_CLIMATIZACION,
     DOMAIN,
 )
@@ -70,8 +72,18 @@ async def async_setup_entry(
         entities.append(
             EliteClimateSensor(
                 coordinator=coordinator,
-                device_id=DEVICE_AGUA,
+                device_id=DEVICE_ACS,
                 device_name="Agua Caliente Sanitaria",
+                sensor_def=sensor_def,
+            )
+        )
+
+    for sensor_def in AFS_SENSORS:
+        entities.append(
+            EliteClimateSensor(
+                coordinator=coordinator,
+                device_id=DEVICE_AFS,
+                device_name="Agua Fría Sanitaria",
                 sensor_def=sensor_def,
             )
         )

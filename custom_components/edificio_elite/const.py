@@ -5,7 +5,8 @@ API_BASE_URL = "https://api.edificioelite.com/api"
 SCAN_INTERVAL = 300
 
 DEVICE_CLIMATIZACION = "climatizacion"
-DEVICE_AGUA = "agua"
+DEVICE_ACS = "agua_caliente_sanitaria"
+DEVICE_AFS = "agua_fria_sanitaria"
 
 ACS_KWH_PER_M3 = 46.5
 
@@ -161,5 +162,35 @@ AGUA_SENSORS = [
         "state_class": "total",
         "unit": "m³",
         "icon": "mdi:water",
+    },
+]
+
+AFS_SENSORS = [
+    {
+        "key": "m3_afs",
+        "name": "Consumo AFS",
+        "field": "m3_afs",
+        "device_class": "water",
+        "state_class": None,
+        "unit": "m³",
+        "icon": "mdi:water-outline",
+    },
+    {
+        "key": "m3_afs_abs",
+        "name": "Consumo AFS (contador)",
+        "field": "m3_afs_abs",
+        "device_class": "water",
+        "state_class": "total_increasing",
+        "unit": "m³",
+        "icon": "mdi:water-outline",
+    },
+    {
+        "key": "m3_afs_mes_inicio",
+        "name": "Consumo AFS (este mes)",
+        "field": "m3_afs_mes_inicio",
+        "device_class": "water",
+        "state_class": "total",
+        "unit": "m³",
+        "icon": "mdi:water-outline",
     },
 ]

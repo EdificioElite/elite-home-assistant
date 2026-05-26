@@ -145,7 +145,7 @@ async def test_computed_sensor(hass: HomeAssistant) -> None:
 
     sensor = EliteClimateSensor(
         coordinator=coordinator,
-        device_id="agua",
+        device_id="agua_caliente_sanitaria",
         device_name="Agua Caliente Sanitaria",
         sensor_def=sensor_def,
     )
@@ -168,9 +168,102 @@ async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> N
 
     sensor = EliteClimateSensor(
         coordinator=coordinator,
-        device_id="agua",
+        device_id="agua_caliente_sanitaria",
         device_name="Agua Caliente Sanitaria",
         sensor_def=sensor_def,
     )
 
     assert sensor.native_value is None
+
+
+async def test_afs_sensor_values(hass: HomeAssistant) -> None:
+    """Test that AFS sensors return correct values from coordinator data."""
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {
+        "m3_afs": 0.456,
+        "m3_afs_abs": 789.012,
+        "m3_afs_mes_inicio": 5.678,
+    }
+    coordinator.async_add_listener = MagicMock()
+
+    sensor_def = {
+        "key": "m3_afs_abs",
+        "name": "Consumo AFS (contador)",
+        "field": "m3_afs_abs",
+        "device_class": "water",
+        "state_class": "total_increasing",
+        "unit": "m³",
+        "icon": "mdi:water-outline",
+    }
+
+    sensor = EliteClimateSensor(
+        coordinator=coordinator,
+        device_id="agua_fria_sanitaria",
+        device_name="Agua Fría Sanitaria",
+        sensor_def=sensor_def,
+    )
+
+    assert sensor.native_value == 789.012
+    assert sensor.available is True
+
+
+async def test_afs_sensor_null_data(hass: HomeAssistant) -> None:
+    """Test AFS sensor returns None when coordinator data is None."""
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = None
+    coordinator.async_add_listener = MagicMock()
+
+    sensor_def = {
+        "key": "m3_afs",
+        "name": "Consumo AFS",
+        "field": "m3_afs",
+        "device_class": "water",
+        "state_class": None,
+        "unit": "m³",
+        "icon": "mdi:water-outline",
+    }
+
+    sensor = EliteClimateSensor(
+        coordinator=coordinator,
+        device_id="agua_fria_sanitaria",
+        device_name="Agua Fría Sanitaria",
+        sensor_def=sensor_def,
+    )
+
+    assert sensor.native_value is None
+
+
+async def test_afs_sensor_device_info(hass: HomeAssistant) -> None:
+    """Test AFS sensor has the correct device info."""
+    from custom_components.edificio_elite.sensor import EliteClimateSensor
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {"m3_afs_abs": 100.0}
+    coordinator.async_add_listener = MagicMock()
+
+    sensor_def = {
+        "key": "m3_afs_abs",
+        "name": "Consumo AFS (contador)",
+        "field": "m3_afs_abs",
+        "device_class": "water",
+        "state_class": "total_increasing",
+        "unit": "m³",
+        "icon": "mdi:water-outline",
+    }
+
+    sensor = EliteClimateSensor(
+        coordinator=coordinator,
+        device_id="agua_fria_sanitaria",
+        device_name="Agua Fría Sanitaria",
+        sensor_def=sensor_def,
+    )
+
+    assert sensor.unique_id == "agua_fria_sanitaria_m3_afs_abs"
+    assert sensor.name == "Consumo AFS (contador)"
