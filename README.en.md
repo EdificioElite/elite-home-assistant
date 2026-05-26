@@ -8,13 +8,13 @@
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Home Assistant integration for residents of Edificio Elite. Monitors aerothermal climate control (heating / cooling) and hot water (DHW) consumption in real time.
+Home Assistant integration for residents of Edificio Elite. Monitors aerothermal climate control (heating / cooling) and DHW (hot water) and cold water consumption in real time.
 
 > 🌐 **Languages:** [Español](README.md) · [English](README.en.md)
 
 ## Features
 
-- **17 entities (16 sensors + 1 binary sensor)** across two devices: Climatización and Agua
+- **22 entities (19 sensors + 3 binary sensors)** across three devices: Climatización, DHW and Cold Water
 - **Automatic polling** every 5 minutes
 - **JWT authentication** with automatic token renewal
 - **HACS compatible** — install directly from the HACS store
@@ -36,17 +36,28 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 | Tª impulsión | °C | Flow temperature |
 | Tª retorno | °C | Return temperature |
 | Potencia actual | W | Current power consumption |
+| Modo | — | Current climate mode (heating / cooling / unknown) |
 | Climatización encendida | — | Binary sensor: on when power > 0 |
+| Modo calefacción activado | — | Binary sensor: on when mode is heating |
+| Modo refrigeración activado | — | Binary sensor: on when mode is cooling |
 
-### Agua (Water)
+### Agua Caliente Sanitaria (DHW)
 
 | Sensor | Unit | Description |
 |---|---|---|
 | Consumo ACS | m³ | Hot water since last reading |
 | Energía ACS | kWh | Hot water energy equivalent |
-| Energía ACS (contador) | kWh | Cumulative ACS energy (computed: m³ × 46.5) |
+| Energía ACS (contador) | kWh | Cumulative DHW energy (computed: m³ × 46.5) |
 | Consumo ACS (contador) | m³ | Cumulative hot water |
 | Consumo ACS (este mes) | m³ | Hot water since month start |
+
+### Agua Fría Sanitaria (Cold Water)
+
+| Sensor | Unit | Description |
+|---|---|---|
+| Consumo AFS | m³ | Cold water since last reading |
+| Consumo AFS (contador) | m³ | Cumulative cold water |
+| Consumo AFS (este mes) | m³ | Cold water since month start |
 
 ## Installation
 

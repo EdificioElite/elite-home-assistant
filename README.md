@@ -8,13 +8,13 @@
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS).
+Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS) y agua fría sanitaria (AFS).
 
 > 🌐 **Idiomas:** [Español](README.md) · [English](README.en.md)
 
 ## Características
 
-- **17 entidades (16 sensores + 1 sensor binario)** repartidos en dos dispositivos: Climatización y Agua
+- **22 entidades (19 sensores + 3 sensores binarios)** repartidos en tres dispositivos: Climatización, Agua Caliente Sanitaria y Agua Fría Sanitaria
 - **Actualización automática** cada 5 minutos
 - **Autenticación JWT** con renovación automática de token
 - **Compatible con HACS** — instálalo directamente desde la tienda de HACS
@@ -36,9 +36,12 @@ Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en
 | Tª impulsión | °C | Temperatura de impulsión |
 | Tª retorno | °C | Temperatura de retorno |
 | Potencia actual | W | Consumo de potencia actual |
+| Modo | — | Modo actual de la climatización (calefacción / refrigeración / desconocido) |
 | Climatización encendida | — | Sensor binario: activo cuando la potencia > 0 |
+| Modo calefacción activado | — | Sensor binario: activo cuando el modo es calefacción |
+| Modo refrigeración activado | — | Sensor binario: activo cuando el modo es refrigeración |
 
-### Agua
+### Agua Caliente Sanitaria
 
 | Sensor | Unidad | Descripción |
 |---|---|---|
@@ -47,6 +50,14 @@ Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en
 | Energía ACS (contador) | kWh | Energía ACS acumulada (calculada: m³ × 46.5) |
 | Consumo ACS (contador) | m³ | Agua caliente acumulada |
 | Consumo ACS (este mes) | m³ | Agua caliente desde el inicio del mes |
+
+### Agua Fría Sanitaria
+
+| Sensor | Unidad | Descripción |
+|---|---|---|
+| Consumo AFS | m³ | Agua fría desde la última lectura |
+| Consumo AFS (contador) | m³ | Agua fría acumulada |
+| Consumo AFS (este mes) | m³ | Agua fría desde el inicio del mes |
 
 ## Instalación
 
