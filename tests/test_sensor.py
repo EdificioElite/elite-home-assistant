@@ -133,10 +133,10 @@ async def test_modo_sensor(hass: HomeAssistant) -> None:
 
 async def test_computed_sensor(hass: HomeAssistant) -> None:
     """Test a computed sensor returns the correct derived value."""
-    from custom_components.edificio_elite.const import ACS_KWH_PER_M3, AGUA_SENSORS
+    from custom_components.edificio_elite.const import ACS_KWH_PER_M3, ACS_SENSORS
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
-    sensor_def = next(s for s in AGUA_SENSORS if s["key"] == "kwh_acs_abs")
+    sensor_def = next(s for s in ACS_SENSORS if s["key"] == "kwh_acs_abs")
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -145,7 +145,7 @@ async def test_computed_sensor(hass: HomeAssistant) -> None:
 
     sensor = EliteClimateSensor(
         coordinator=coordinator,
-        device_id="agua_caliente_sanitaria",
+        device_id="agua",
         device_name="Agua Caliente Sanitaria",
         sensor_def=sensor_def,
     )
@@ -156,10 +156,10 @@ async def test_computed_sensor(hass: HomeAssistant) -> None:
 
 async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> None:
     """Test a computed sensor returns None when the source field is missing."""
-    from custom_components.edificio_elite.const import AGUA_SENSORS
+    from custom_components.edificio_elite.const import ACS_SENSORS
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
-    sensor_def = next(s for s in AGUA_SENSORS if s["key"] == "kwh_acs_abs")
+    sensor_def = next(s for s in ACS_SENSORS if s["key"] == "kwh_acs_abs")
 
     coordinator = MagicMock()
     coordinator.last_update_success = True
@@ -168,7 +168,7 @@ async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> N
 
     sensor = EliteClimateSensor(
         coordinator=coordinator,
-        device_id="agua_caliente_sanitaria",
+        device_id="agua",
         device_name="Agua Caliente Sanitaria",
         sensor_def=sensor_def,
     )

@@ -16,7 +16,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     AFS_SENSORS,
-    AGUA_SENSORS,
+    ACS_SENSORS,
     CLIMATIZACION_SENSORS,
     DEVICE_ACS,
     DEVICE_AFS,
@@ -68,7 +68,7 @@ async def async_setup_entry(
             )
         )
 
-    for sensor_def in AGUA_SENSORS:
+    for sensor_def in ACS_SENSORS:
         entities.append(
             EliteClimateSensor(
                 coordinator=coordinator,
