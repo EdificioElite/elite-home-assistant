@@ -5,7 +5,7 @@ API_BASE_URL = "https://api.edificioelite.com/api"
 SCAN_INTERVAL = 300
 
 DEVICE_CLIMATIZACION = "climatizacion"
-DEVICE_ACS = "agua"
+DEVICE_ACS = "agua_caliente"
 DEVICE_AFS = "agua_fria_sanitaria"
 
 ACS_KWH_PER_M3 = 46.5
