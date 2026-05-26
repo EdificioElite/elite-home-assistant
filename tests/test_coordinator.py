@@ -77,10 +77,15 @@ async def test_fetch_consumo_actual_success(hass, mock_api_session):
         "kwh_calor_mes_inicio": 50.123,
         "kwh_frio_mes_inicio": 20.456,
         "m3_acs_mes_inicio": 3.789,
+        "m3_afs": 0.456,
+        "m3_afs_abs": 789.012,
+        "m3_afs_mes_inicio": 5.678,
         "temp_impulsion": 35.5,
         "temp_retorno": 30.2,
         "power_w": 1200,
         "modo": "calefaccion",
+        "modo_calefaccion_activado": True,
+        "modo_refrigeracion_activado": False,
     }
 
     mock_resp = MockResponse(200, sample_data)
