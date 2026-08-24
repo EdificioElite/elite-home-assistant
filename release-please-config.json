@@ -1,0 +1,16 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "include-component-in-tag": false,
+      "include-v-in-tag": true,
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "custom_components/edificio_elite/manifest.json",
+          "jsonpath": "$.version"
+        }
+      ]
+    }
+  }
+}

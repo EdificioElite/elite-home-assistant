@@ -4,7 +4,6 @@ from typing import Any
 
 import voluptuous as vol
 from aiohttp import ClientError
-
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession

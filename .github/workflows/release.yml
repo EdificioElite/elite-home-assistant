@@ -1,38 +1,19 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
-  release:
-    name: Create Release
+  release-please:
+    name: Release Please
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: googleapis/release-please-action@v4
         with:
-          fetch-depth: 0
-
-      - name: Read version from manifest
-        id: read_version
-        run: |
-          VERSION=$(python3 -c "import json; print(json.load(open('custom_components/edificio_elite/manifest.json'))['version'])")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Create tag
-        run: |
-          VERSION=${{ steps.read_version.outputs.version }}
-          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
-            echo "Tag v${VERSION} already exists, skipping tag creation"
-          else
-            git tag "v${VERSION}"
-            git push origin "v${VERSION}"
-          fi
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.read_version.outputs.version }}
-          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
