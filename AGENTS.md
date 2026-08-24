@@ -9,7 +9,7 @@ A Home Assistant custom integration for Edificio Elite residents. Monitors aerot
 custom_components/edificio_elite/   # Integration code (entry: __init__.py)
 tests/                             # pytest tests
 assets/                            # Logo for README
-.brand/                            # icon.png + logo.png (HA 2026.3+ requirement)
+icon.png                           # HACS store listing icon (repo root)
 ```
 
 ## Developer commands
@@ -34,7 +34,7 @@ The `main` branch is **protected**. Direct pushes are rejected. All changes must
 Releases are automated via [release-please](https://github.com/googleapis/release-please-action). No manual version bump is needed.
 
 1. Merge changes to `main` using conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, etc.).
-2. release-please opens a **release PR** that bumps `manifest.json` and updates `CHANGELOG.md`.
+2. release-please opens a **release PR** that bumps `custom_components/edificio_elite/manifest.json` and updates `CHANGELOG.md`.
 3. Merge the release PR — release-please creates the tag `vX.Y.Z` and the GitHub Release automatically.
 
 The version is derived from commit history; `feat!` or `BREAKING CHANGE` triggers a major/minor bump, `feat:`/`fix:` a minor/patch bump. Config lives in `release-please-config.json` (version tracking in `.release-please-manifest.json`).
