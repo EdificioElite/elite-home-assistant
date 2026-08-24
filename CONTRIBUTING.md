@@ -32,15 +32,13 @@ The `main` branch is **protected**. Direct pushes are blocked. All changes must 
 
 ## Release Process
 
-1. **Bump the version** in a PR (example commit message: `chore: bump version to 0.3.0`):
-   - Edit `custom_components/edificio_elite/manifest.json` and update the `"version"` field
-   - Create a PR, wait for CI, and merge it
+Releases are automated via [release-please](https://github.com/googleapis/release-please-action). No manual version bump is needed.
 
-2. **Run the release workflow**:
-   ```bash
-   gh workflow run Release
-   ```
-   This reads the current version from `manifest.json`, creates a tag, and publishes a GitHub Release.
+1. **Merge changes to `main`** using conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, etc.).
+2. release-please opens a **release PR** that bumps `custom_components/edificio_elite/manifest.json` and updates `CHANGELOG.md`.
+3. **Merge the release PR** — release-please creates the tag `vX.Y.Z` and the GitHub Release automatically.
+
+The version is derived from commit history: `feat!` or `BREAKING CHANGE` triggers a major/minor bump, while `feat:`/`fix:` trigger a minor/patch bump. Config lives in `release-please-config.json` (version tracking in `.release-please-manifest.json`).
 
 ## Code Standards
 
