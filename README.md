@@ -8,13 +8,13 @@
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS) y agua fría sanitaria (AFS).
+Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en tiempo real el control climático aerotérmico (calefacción / refrigeración) y el consumo de agua caliente sanitaria (ACS) y agua fría sanitaria (AFS), y las facturas mensuales.
 
 > 🌐 **Idiomas:** [Español](README.md) · [English](README.en.md)
 
 ## Características
 
-- **34 entidades (31 sensores + 3 sensores binarios)** repartidos en cuatro dispositivos: Climatización, Agua Caliente Sanitaria, Agua Fría Sanitaria y Facturación
+- **34 entidades (31 sensores + 3 sensores binarios)** repartidas en cuatro dispositivos: Climatización, Agua Caliente Sanitaria, Agua Fría Sanitaria y Facturación
 - **Actualización automática** cada 5 minutos
 - **Autenticación JWT** con renovación automática de token
 - **Compatible con HACS** — instálalo directamente desde la tienda de HACS
@@ -66,7 +66,7 @@ Los datos se actualizan cada 6 horas.
 | Sensor | Unidad | Descripción |
 |---|---|---|
 | Última factura: importe total | EUR | Importe total de la factura más reciente |
-| Importe acumulado facturado | EUR | Suma de todas las facturas (válido para el Energy Dashboard) |
+| Importe acumulado facturado | EUR | Suma de todas las facturas (válido para el Panel de energía) |
 | Importe fijo | EUR | Parte fija de la última factura |
 | Importe calefacción | EUR | Parte variable de calefacción |
 | Importe refrigeración | EUR | Parte variable de refrigeración |
@@ -77,6 +77,8 @@ Los datos se actualizan cada 6 horas.
 | Consumo ACS (periodo) | m³ | Agua caliente facturada en el periodo |
 | Inicio del periodo | — | Fecha de inicio del periodo facturado |
 | Fin del periodo | — | Fecha de fin del periodo facturado |
+
+No requiere configuración adicional: usa las mismas credenciales de la integración.
 
 ## Instalación
 

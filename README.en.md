@@ -8,7 +8,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/EdificioElite/elite-home-assistant)](https://github.com/EdificioElite/elite-home-assistant/releases)
 [![CI](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/EdificioElite/elite-home-assistant/actions/workflows/ci.yml)
 
-Home Assistant integration for residents of Edificio Elite. Monitors aerothermal climate control (heating / cooling) and DHW (hot water) and cold water consumption in real time.
+Home Assistant integration for residents of Edificio Elite. Monitors aerothermal climate control (heating / cooling), DHW (hot water) and cold water consumption in real time, and monthly invoices.
 
 > 🌐 **Languages:** [Español](README.md) · [English](README.en.md)
 
@@ -59,7 +59,7 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 | Consumo AFS (contador) | m³ | Cumulative cold water |
 | Consumo AFS (este mes) | m³ | Cold water since month start |
 
-### Billing
+### Facturación (Billing)
 
 Data is refreshed every 6 hours.
 
@@ -70,13 +70,15 @@ Data is refreshed every 6 hours.
 | Importe fijo | EUR | Fixed part of the latest invoice |
 | Importe calefacción | EUR | Variable heating part |
 | Importe refrigeración | EUR | Variable cooling part |
-| Importe ACS | EUR | Hot water part |
+| Importe ACS | EUR | DHW part |
 | Energía calefacción (periodo) | kWh | Heating energy billed in the period |
 | Energía refrigeración (periodo) | kWh | Cooling energy billed in the period |
 | Energía ACS (periodo) | kWh | DHW energy billed in the period |
-| Consumo ACS (periodo) | m³ | Hot water billed in the period |
+| Consumo ACS (periodo) | m³ | DHW billed in the period |
 | Inicio del periodo | — | Billing period start date |
 | Fin del periodo | — | Billing period end date |
+
+No additional setup is required: it uses the integration credentials.
 
 ## Installation
 
