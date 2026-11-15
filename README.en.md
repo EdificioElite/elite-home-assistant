@@ -14,7 +14,7 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 
 ## Features
 
-- **22 entities (19 sensors + 3 binary sensors)** across three devices: Climatización, DHW and Cold Water
+- **34 entities (31 sensors + 3 binary sensors)** across four devices: Climate, DHW, Cold Water and Billing
 - **Automatic polling** every 5 minutes
 - **JWT authentication** with automatic token renewal
 - **HACS compatible** — install directly from the HACS store
@@ -58,6 +58,25 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 | Consumo AFS | m³ | Cold water since last reading |
 | Consumo AFS (contador) | m³ | Cumulative cold water |
 | Consumo AFS (este mes) | m³ | Cold water since month start |
+
+### Billing
+
+Data is refreshed every 6 hours.
+
+| Sensor | Unit | Description |
+|---|---|---|
+| Última factura: importe total | EUR | Total amount of the latest invoice |
+| Importe acumulado facturado | EUR | Sum of all invoices (valid for the Energy Dashboard) |
+| Importe fijo | EUR | Fixed part of the latest invoice |
+| Importe calefacción | EUR | Variable heating part |
+| Importe refrigeración | EUR | Variable cooling part |
+| Importe ACS | EUR | Hot water part |
+| Energía calefacción (periodo) | kWh | Heating energy billed in the period |
+| Energía refrigeración (periodo) | kWh | Cooling energy billed in the period |
+| Energía ACS (periodo) | kWh | DHW energy billed in the period |
+| Consumo ACS (periodo) | m³ | Hot water billed in the period |
+| Inicio del periodo | — | Billing period start date |
+| Fin del periodo | — | Billing period end date |
 
 ## Installation
 
