@@ -160,3 +160,16 @@ async def test_get_network_error_propagates(hass, mock_api_session):
 
     with pytest.raises(ClientError):
         await client.async_get("/consumo-actual")
+
+
+async def test_login_network_error_propagates(hass, mock_api_session):
+    """Transport errors during login propagate so callers can keep data."""
+    from custom_components.edificio_elite.api import EliteApiClient
+
+    mock_session = MagicMock()
+    mock_session.post.side_effect = ClientError("boom")
+    mock_api_session.return_value = mock_session
+
+    client = EliteApiClient(hass, email="test@example.com", password="pass")
+    with pytest.raises(ClientError):
+        await client.async_login()

@@ -186,6 +186,47 @@ async def test_invoice_sensor_unavailable_on_failed_update(
     assert sensor.available is False
 
 
+async def test_facturacion_sensor_metadata(hass: HomeAssistant) -> None:
+    """Invoice sensors expose the expected device/state class and unit."""
+    from homeassistant.components.sensor import (
+        SensorDeviceClass,
+        SensorStateClass,
+    )
+
+    from custom_components.edificio_elite.const import FACTURACION_SENSORS
+
+    expected = {
+        "importe_total": (SensorDeviceClass.MONETARY, None, "EUR"),
+        "importe_acumulado": (
+            SensorDeviceClass.MONETARY,
+            SensorStateClass.TOTAL,
+            "EUR",
+        ),
+        "importe_fijo": (SensorDeviceClass.MONETARY, None, "EUR"),
+        "importe_calor": (SensorDeviceClass.MONETARY, None, "EUR"),
+        "importe_frio": (SensorDeviceClass.MONETARY, None, "EUR"),
+        "importe_acs": (SensorDeviceClass.MONETARY, None, "EUR"),
+        "kwh_calor": (SensorDeviceClass.ENERGY, None, "kWh"),
+        "kwh_frio": (SensorDeviceClass.ENERGY, None, "kWh"),
+        "kwh_acs": (SensorDeviceClass.ENERGY, None, "kWh"),
+        "m3_acs": (SensorDeviceClass.WATER, None, "m³"),
+        "periodo_inicio": (SensorDeviceClass.TIMESTAMP, None, None),
+        "periodo_fin": (SensorDeviceClass.TIMESTAMP, None, None),
+    }
+
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {}
+    coordinator.async_add_listener = MagicMock()
+
+    for sensor_def in FACTURACION_SENSORS:
+        sensor = make_sensor(coordinator, sensor_def)
+        device_class, state_class, unit = expected[sensor_def["key"]]
+        assert sensor.device_class is device_class
+        assert sensor.state_class is state_class
+        assert sensor.native_unit_of_measurement == unit
+
+
 async def test_invoice_attributes_when_data_is_none(
     hass: HomeAssistant,
 ) -> None:

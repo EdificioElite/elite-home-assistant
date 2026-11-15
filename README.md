@@ -66,7 +66,7 @@ Los datos se actualizan cada 6 horas.
 | Sensor | Unidad | Descripción |
 |---|---|---|
 | Última factura: importe total | EUR | Importe total de la factura más reciente |
-| Importe acumulado facturado | EUR | Suma de todas las facturas (válido para el Panel de energía) |
+| Importe acumulado facturado | EUR | Suma de todas las facturas (puede usarse como coste en el Panel de energía) |
 | Importe fijo | EUR | Parte fija de la última factura |
 | Importe calefacción | EUR | Parte variable de calefacción |
 | Importe refrigeración | EUR | Parte variable de refrigeración |

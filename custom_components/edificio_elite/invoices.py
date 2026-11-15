@@ -43,21 +43,19 @@ def build_invoice_data(invoices: list[dict]) -> dict:
     """Build the coordinator payload from the invoice list.
 
     The API returns invoices ordered by start date descending, so the first
-    element is the most recent one.
+    element is the most recent one. Non-dict elements are ignored.
     """
-    latest = dict(invoices[0]) if invoices else {}
+    valid = [invoice for invoice in invoices if isinstance(invoice, dict)]
+    latest = dict(valid[0]) if valid else {}
     for field in NUMERIC_FIELDS:
         if field in latest:
             latest[field] = _to_float(latest[field])
 
     latest["importe_acumulado"] = round(
-        sum(
-            (_to_float(invoice.get("importe_total")) or 0 for invoice in invoices),
-            0.0,
-        ),
+        sum(_to_float(invoice.get("importe_total")) or 0 for invoice in valid),
         2,
     )
-    latest["num_facturas"] = len(invoices)
+    latest["num_facturas"] = len(valid)
     return latest
 
 

@@ -4,6 +4,7 @@ import asyncio
 import logging
 from typing import Any
 
+from aiohttp import ClientError
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import UpdateFailed
@@ -67,6 +68,8 @@ class EliteApiClient:
                 data = await resp.json()
                 self._token = data["token"]
         except UpdateFailed:
+            raise
+        except (ClientError, TimeoutError):
             raise
         except Exception as err:
             raise UpdateFailed(f"Login error: {err}") from err

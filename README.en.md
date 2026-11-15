@@ -66,7 +66,7 @@ Data is refreshed every 6 hours.
 | Sensor | Unit | Description |
 |---|---|---|
 | Última factura: importe total | EUR | Total amount of the latest invoice |
-| Importe acumulado facturado | EUR | Sum of all invoices (valid for the Energy Dashboard) |
+| Importe acumulado facturado | EUR | Sum of all invoices (can be used as a cost statistic in the Energy Dashboard) |
 | Importe fijo | EUR | Fixed part of the latest invoice |
 | Importe calefacción | EUR | Variable heating part |
 | Importe refrigeración | EUR | Variable cooling part |

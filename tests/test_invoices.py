@@ -162,6 +162,16 @@ async def test_refresh_unexpected_response_without_previous_raises(hass):
         await coord._async_update_data()
 
 
+async def test_build_invoice_data_ignores_non_dict_elements():
+    """Malformed elements are skipped instead of raising."""
+    from custom_components.edificio_elite.invoices import build_invoice_data
+
+    data = build_invoice_data([None, "bad", {"importe_total": 5}])
+    assert data["importe_total"] == 5
+    assert data["num_facturas"] == 1
+    assert data["importe_acumulado"] == 5.0
+
+
 async def test_invoices_coordinator_uses_config_entry(hass):
     """The invoices coordinator stores the config entry explicitly."""
     from custom_components.edificio_elite.invoices import EliteInvoicesCoordinator

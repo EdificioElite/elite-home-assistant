@@ -4,9 +4,9 @@
 
 **Goal:** Exponer las facturas mensuales de la vivienda en Home Assistant como un device `Facturación` con 12 sensores, sin tocar la API.
 
-**Architecture:** Se extrae un `EliteApiClient` compartido (login + GET con re-login en 401). `EliteClimateCoordinator` y el nuevo `EliteInvoicesCoordinator` (refresco cada 6 h) lo reutilizan. `hass.data[DOMAIN][entry_id]` pasa a un dict con `client`, `climate` e `invoices`.
+**Architecture:** Se extrae un `EliteApiClient` compartido (login + GET con re-login en 401). `EliteClimateCoordinator` y el nuevo `EliteInvoicesCoordinator` (refresco cada 6 h) lo reutilizan. Los objetos compartidos se guardan en `entry.runtime_data` (dataclass `EliteRuntimeData`).
 
-**Tech Stack:** Python 3.14, Home Assistant custom component, aiohttp, pytest, pytest-homeassistant-custom-component, ruff.
+**Tech Stack:** Python 3.12+, Home Assistant custom component, aiohttp, pytest, pytest-homeassistant-custom-component, ruff.
 
 **Spec:** `docs/specs/2026-11-15-facturas-ha-design.md`
 
