@@ -86,6 +86,7 @@ async def test_setup_survives_invoice_refresh_failure(hass: HomeAssistant) -> No
 
     assert result is True
     assert entry.runtime_data.invoices is invoices
+    invoices.async_refresh.assert_awaited_once()
     hass.config_entries.async_forward_entry_setups.assert_awaited_once()
 
 

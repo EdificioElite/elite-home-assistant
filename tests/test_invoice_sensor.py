@@ -1,6 +1,6 @@
 """Tests for the Edificio Elite invoice sensors."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import MagicMock
 
 from homeassistant.core import HomeAssistant
@@ -84,20 +84,22 @@ async def test_invoice_period_sensor_parses_timestamp(
 
     sensor = make_sensor(coordinator, sensor_def)
 
-    assert isinstance(sensor.native_value, datetime)
-    assert sensor.native_value.month == 10
+    assert sensor.native_value == datetime(
+        2026, 10, 31, tzinfo=timezone.utc
+    )
 
 
 async def test_invoice_sensor_empty_data(hass: HomeAssistant) -> None:
     """An empty invoice list yields zero accumulated and no failure."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
+    from custom_components.edificio_elite.invoices import build_invoice_data
 
     sensor_def = next(
         s for s in FACTURACION_SENSORS if s["key"] == "importe_acumulado"
     )
     coordinator = MagicMock()
     coordinator.last_update_success = True
-    coordinator.data = {"importe_acumulado": 0, "num_facturas": 0}
+    coordinator.data = build_invoice_data([])
     coordinator.async_add_listener = MagicMock()
 
     sensor = make_sensor(coordinator, sensor_def)
@@ -144,3 +146,62 @@ async def test_invoice_sensor_device_info(hass: HomeAssistant) -> None:
 
     assert sensor.unique_id == "facturacion_importe_total"
     assert sensor.device_info["identifiers"] == {(DOMAIN, DEVICE_FACTURACION)}
+
+
+async def test_invoice_period_sensor_handles_bad_timestamp(
+    hass: HomeAssistant,
+) -> None:
+    """A malformed timestamp yields None instead of raising."""
+    from custom_components.edificio_elite.const import FACTURACION_SENSORS
+
+    sensor_def = next(
+        s for s in FACTURACION_SENSORS if s["key"] == "periodo_fin"
+    )
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = {"fecha_factura_fin": "not-a-date"}
+    coordinator.async_add_listener = MagicMock()
+
+    sensor = make_sensor(coordinator, sensor_def)
+
+    assert sensor.native_value is None
+
+
+async def test_invoice_sensor_unavailable_on_failed_update(
+    hass: HomeAssistant,
+) -> None:
+    """Invoice sensors become unavailable when the refresh fails."""
+    from custom_components.edificio_elite.const import FACTURACION_SENSORS
+
+    sensor_def = next(
+        s for s in FACTURACION_SENSORS if s["key"] == "importe_total"
+    )
+    coordinator = MagicMock()
+    coordinator.last_update_success = False
+    coordinator.data = {"importe_total": 10.0}
+    coordinator.async_add_listener = MagicMock()
+
+    sensor = make_sensor(coordinator, sensor_def)
+
+    assert sensor.available is False
+
+
+async def test_invoice_attributes_when_data_is_none(
+    hass: HomeAssistant,
+) -> None:
+    """The total invoice sensor only exposes the dashboard link without data."""
+    from custom_components.edificio_elite.const import FACTURACION_SENSORS
+
+    sensor_def = next(
+        s for s in FACTURACION_SENSORS if s["key"] == "importe_total"
+    )
+    coordinator = MagicMock()
+    coordinator.last_update_success = True
+    coordinator.data = None
+    coordinator.async_add_listener = MagicMock()
+
+    sensor = make_sensor(coordinator, sensor_def)
+
+    assert sensor.extra_state_attributes == {
+        "dashboard_url": "https://www.edificioelite.com/"
+    }
