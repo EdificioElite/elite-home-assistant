@@ -1220,3 +1220,22 @@ gh pr create --base main --title "feat: facturas de vivienda" --body "Añade el 
 ```
 
 Esperar a que CI (ruff, pytest, hassfest) esté en verde antes de mergear.
+
+---
+
+## Notas de ejecución (desviaciones respecto al plan)
+
+- **Cliente API**: `async_login` se serializa con `asyncio.Lock` y
+  `_ensure_login()` para evitar dobles logins concurrentes. `async_get` es un
+  wrapper fino sobre `_async_get(..., retried=False)`. `_to_float` rechaza
+  booleanos y valores no finitos (`nan`/`inf`) para no contaminar el acumulado.
+- **Runtime data**: en lugar de `hass.data[DOMAIN][entry_id]`, se usa
+  `entry.runtime_data` con el dataclass `EliteRuntimeData` (tipado).
+- **Config entry explícita**: ambos coordinadores aceptan `entry` y pasan
+  `config_entry=entry` a `DataUpdateCoordinator`, evitando la ruta implícita
+  deprecada que rompe en HA 2026.8.
+- **Tests añadidos** respecto al plan: `tests/test_init.py` (wiring, unload,
+  aislamiento de fallos, setup de plataformas), tests de `config_entry`,
+  atributos de factura y ramas de error. Total: 63 tests.
+- **Fixtures**: se eliminó `mock_frame_report_usage` de `conftest.py` al dejar
+  de usarse la ruta implícita de `config_entry`.

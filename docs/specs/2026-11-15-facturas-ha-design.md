@@ -87,18 +87,23 @@ comportamiento y errores que ahora).
 | `EliteClimateCoordinator` | `/consumo-actual` | 5 min |
 | `EliteInvoicesCoordinator` | `/facturas` | 6 h |
 
-`hass.data[DOMAIN][entry.entry_id]` pasa a ser:
+Los coordinadores reciben el `ConfigEntry` y lo pasan a
+`DataUpdateCoordinator(config_entry=entry)` de forma explícita (evita el
+ContextVar implícito, deprecado en HA y eliminado en 2026.8).
+
+Los objetos compartidos se guardan tipados en `entry.runtime_data`:
 
 ```python
-{
-    "client": elite_api_client,
-    "climate": climate_coordinator,
-    "invoices": invoices_coordinator,
-}
+@dataclass
+class EliteRuntimeData:
+    client: EliteApiClient
+    climate: EliteClimateCoordinator
+    invoices: EliteInvoicesCoordinator
 ```
 
-Hay que actualizar `__init__.py`, `sensor.py` y `binary_sensor.py` para leer
-con esa clave.
+`__init__.py`, `sensor.py` y `binary_sensor.py` leen
+`entry.runtime_data.{client,climate,invoices}`. Al descargar la entry, HA
+elimina `runtime_data` automáticamente.
 
 ### Config flow
 
