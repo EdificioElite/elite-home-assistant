@@ -23,19 +23,24 @@ def hass():
 
 @pytest.fixture
 def mock_api_session():
-    """Mock aiohttp client session."""
+    """Mock aiohttp client session used by the API client."""
     with patch(
-        "custom_components.edificio_elite.coordinator.async_get_clientsession"
+        "custom_components.edificio_elite.api.async_get_clientsession"
     ) as mock_session:
         yield mock_session
 
 
 @pytest.fixture
-def coordinator(hass, mock_api_session):
-    """Create a coordinator instance with mocked session."""
+def api_client(hass, mock_api_session):
+    """Create an API client with a mocked session."""
+    from custom_components.edificio_elite.api import EliteApiClient
+
+    return EliteApiClient(hass, email="test@example.com", password="testpass")
+
+
+@pytest.fixture
+def coordinator(hass, api_client):
+    """Create a climate coordinator backed by the mocked client."""
     from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
-    coord = EliteClimateCoordinator(
-        hass, email="test@example.com", password="testpass"
-    )
-    return coord
+    return EliteClimateCoordinator(hass, api_client)
