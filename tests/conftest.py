@@ -5,13 +5,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def mock_frame_report_usage():
-    """Prevent frame.report_usage from raising RuntimeError in tests."""
-    with patch("homeassistant.helpers.frame.report_usage"):
-        yield
-
-
 @pytest.fixture
 def hass():
     """Provide a mock HomeAssistant instance."""

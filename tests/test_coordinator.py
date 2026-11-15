@@ -90,7 +90,6 @@ async def test_update_data_calls_fetch(hass):
 
 async def test_coordinator_uses_config_entry(hass):
     """The coordinator stores the config entry explicitly."""
-    coord = make_coordinator(hass, return_value=SAMPLE_DATA)
     entry = MagicMock()
 
     from custom_components.edificio_elite.coordinator import EliteClimateCoordinator

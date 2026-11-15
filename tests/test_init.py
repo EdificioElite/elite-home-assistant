@@ -1,6 +1,5 @@
 """Tests for Edificio Elite integration setup."""
 
-from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -86,7 +85,7 @@ async def test_setup_survives_invoice_refresh_failure(hass: HomeAssistant) -> No
         result = await async_setup_entry(hass, entry)
 
     assert result is True
-    assert invoices.last_update_success is False
+    assert entry.runtime_data.invoices is invoices
     hass.config_entries.async_forward_entry_setups.assert_awaited_once()
 
 
@@ -134,10 +133,13 @@ async def test_unload_entry_unloads_platforms(hass: HomeAssistant) -> None:
 
 async def test_sensor_setup_binds_invoice_entities(hass: HomeAssistant) -> None:
     """The sensor platform creates 31 sensors, 12 of them on Facturación."""
-    from custom_components.edificio_elite import sensor
+    from custom_components.edificio_elite import EliteRuntimeData, sensor
+    from custom_components.edificio_elite.const import DEVICE_FACTURACION, DOMAIN
 
     entry = make_entry()
-    entry.runtime_data = SimpleNamespace(climate=MagicMock(), invoices=MagicMock())
+    entry.runtime_data = EliteRuntimeData(
+        client=MagicMock(), climate=MagicMock(), invoices=MagicMock()
+    )
 
     added = []
     await sensor.async_setup_entry(hass, entry, added.extend)
@@ -153,16 +155,28 @@ async def test_sensor_setup_binds_invoice_entities(hass: HomeAssistant) -> None:
         entity.coordinator is entry.runtime_data.invoices
         for entity in invoice_entities
     )
+    assert all(
+        entity.device_info["identifiers"] == {(DOMAIN, DEVICE_FACTURACION)}
+        for entity in invoice_entities
+    )
+    climate_entities = [
+        entity
+        for entity in added
+        if entity.coordinator is entry.runtime_data.climate
+    ]
+    assert len(climate_entities) == 19
 
 
 async def test_binary_sensor_setup_uses_climate_coordinator(
     hass: HomeAssistant,
 ) -> None:
     """The binary sensor platform creates 3 entities bound to climate."""
-    from custom_components.edificio_elite import binary_sensor
+    from custom_components.edificio_elite import EliteRuntimeData, binary_sensor
 
     entry = make_entry()
-    entry.runtime_data = SimpleNamespace(climate=MagicMock(), invoices=MagicMock())
+    entry.runtime_data = EliteRuntimeData(
+        client=MagicMock(), climate=MagicMock(), invoices=MagicMock()
+    )
 
     added = []
     await binary_sensor.async_setup_entry(hass, entry, added.extend)
