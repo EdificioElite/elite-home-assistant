@@ -156,7 +156,7 @@ class EliteClimateSensor(SensorEntity):
         value = self.coordinator.data.get(field)
         if self._sensor_def["device_class"] == "timestamp" and value:
             try:
-                return datetime.fromisoformat(value.replace("Z", "+00:00"))
+                return datetime.fromisoformat(value)
             except (ValueError, TypeError):
                 return None
         return value
