@@ -29,9 +29,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up Edificio Elite binary sensors."""
-    coordinator: EliteClimateCoordinator = hass.data[DOMAIN][entry.entry_id][
-        "climate"
-    ]
+    coordinator: EliteClimateCoordinator = entry.runtime_data.climate
 
     entities: list[BinarySensorEntity] = [
         EliteClimateRunningSensor(coordinator)

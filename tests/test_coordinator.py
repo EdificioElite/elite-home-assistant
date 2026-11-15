@@ -86,3 +86,16 @@ async def test_update_data_calls_fetch(hass):
         result = await coord._async_update_data()
     fetch.assert_awaited_once()
     assert result["power_w"] == 1200
+
+
+async def test_coordinator_uses_config_entry(hass):
+    """The coordinator stores the config entry explicitly."""
+    coord = make_coordinator(hass, return_value=SAMPLE_DATA)
+    entry = MagicMock()
+
+    from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
+
+    client = MagicMock()
+    client.async_get = AsyncMock(return_value=SAMPLE_DATA)
+    coord = EliteClimateCoordinator(hass, client, entry)
+    assert coord.config_entry is entry

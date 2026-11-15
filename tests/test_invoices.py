@@ -160,3 +160,14 @@ async def test_refresh_unexpected_response_without_previous_raises(hass):
     coord = make_coordinator(hass, return_value={"not": "a list"})
     with pytest.raises(UpdateFailed):
         await coord._async_update_data()
+
+
+async def test_invoices_coordinator_uses_config_entry(hass):
+    """The invoices coordinator stores the config entry explicitly."""
+    from custom_components.edificio_elite.invoices import EliteInvoicesCoordinator
+
+    client = MagicMock()
+    client.async_get = AsyncMock(return_value=INVOICES)
+    entry = MagicMock()
+    coord = EliteInvoicesCoordinator(hass, client, entry)
+    assert coord.config_entry is entry

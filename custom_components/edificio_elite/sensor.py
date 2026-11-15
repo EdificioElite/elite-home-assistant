@@ -18,6 +18,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
     ACS_SENSORS,
@@ -32,6 +33,7 @@ from .const import (
     FACTURACION_SENSORS,
 )
 from .coordinator import EliteClimateCoordinator
+from .invoices import EliteInvoicesCoordinator
 
 DEVICE_CLASS_MAP: dict[str | None, SensorDeviceClass | None] = {
     "energy": SensorDeviceClass.ENERGY,
@@ -64,9 +66,8 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up Edificio Elite sensors."""
-    entry_data = hass.data[DOMAIN][entry.entry_id]
-    coordinator: EliteClimateCoordinator = entry_data["climate"]
-    invoices_coordinator = entry_data["invoices"]
+    coordinator: EliteClimateCoordinator = entry.runtime_data.climate
+    invoices_coordinator: EliteInvoicesCoordinator = entry.runtime_data.invoices
 
     entities: list[SensorEntity] = []
 
@@ -121,7 +122,7 @@ class EliteClimateSensor(SensorEntity):
 
     def __init__(
         self,
-        coordinator: EliteClimateCoordinator,
+        coordinator: DataUpdateCoordinator[dict],
         device_id: str,
         device_name: str,
         sensor_def: dict[str, Any],
@@ -166,15 +167,20 @@ class EliteClimateSensor(SensorEntity):
         if not self._sensor_def.get("invoice_attributes"):
             return None
         data = self.coordinator.data or {}
-        return {
-            "id_factura": data.get("id_factura"),
-            "periodo": data.get("fecha_factura_inicio"),
-            "periodo_fin": data.get("fecha_factura_fin"),
-            "tiene_pdf": data.get("tiene_pdf"),
-            "num_facturas": data.get("num_facturas"),
-            "importe_variable_acs": data.get("importe_variable_acs"),
-            "dashboard_url": DASHBOARD_URL,
+        attributes = {
+            key: value
+            for key, value in {
+                "id_factura": data.get("id_factura"),
+                "periodo": data.get("fecha_factura_inicio"),
+                "periodo_fin": data.get("fecha_factura_fin"),
+                "tiene_pdf": data.get("tiene_pdf"),
+                "num_facturas": data.get("num_facturas"),
+                "importe_variable_acs": data.get("importe_variable_acs"),
+            }.items()
+            if value is not None
         }
+        attributes["dashboard_url"] = DASHBOARD_URL
+        return attributes
 
     @property
     def available(self) -> bool:

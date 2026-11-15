@@ -3,6 +3,7 @@
 import logging
 from datetime import timedelta
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -15,11 +16,17 @@ _LOGGER = logging.getLogger(__name__)
 class EliteClimateCoordinator(DataUpdateCoordinator[dict]):
     """Coordinator that fetches climate and water data every 5 minutes."""
 
-    def __init__(self, hass: HomeAssistant, client: EliteApiClient) -> None:
-        """Initialize the coordinator with the shared API client."""
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        client: EliteApiClient,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the coordinator with the shared API client and entry."""
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=DOMAIN,
             update_interval=timedelta(seconds=SCAN_INTERVAL),
         )

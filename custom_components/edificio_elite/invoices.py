@@ -5,6 +5,7 @@ import math
 from datetime import timedelta
 from typing import Any
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -63,11 +64,17 @@ def build_invoice_data(invoices: list[dict]) -> dict:
 class EliteInvoicesCoordinator(DataUpdateCoordinator[dict]):
     """Coordinator that fetches invoices every 6 hours."""
 
-    def __init__(self, hass: HomeAssistant, client: EliteApiClient) -> None:
-        """Initialize the coordinator with the shared API client."""
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        client: EliteApiClient,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the coordinator with the shared API client and entry."""
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=f"{DOMAIN}_facturas",
             update_interval=timedelta(seconds=INVOICE_SCAN_INTERVAL),
         )

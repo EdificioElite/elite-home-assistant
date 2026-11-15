@@ -1,11 +1,14 @@
 """Tests for Edificio Elite integration setup."""
 
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
 
-from custom_components.edificio_elite.const import DOMAIN
+from custom_components.edificio_elite import PLATFORMS
 
 
 def make_entry():
@@ -17,11 +20,10 @@ def make_entry():
 
 
 async def test_setup_entry_wires_coordinators(hass: HomeAssistant) -> None:
-    """Setup stores the client and both coordinators and forwards platforms."""
+    """Setup stores runtime data and forwards the expected platforms."""
     from custom_components.edificio_elite import async_setup_entry
 
     entry = make_entry()
-    hass.data = {}
     hass.config_entries.async_forward_entry_setups = AsyncMock(return_value=None)
 
     climate = MagicMock()
@@ -34,6 +36,49 @@ async def test_setup_entry_wires_coordinators(hass: HomeAssistant) -> None:
     ) as client_cls, patch(
         "custom_components.edificio_elite.EliteClimateCoordinator",
         return_value=climate,
+    ) as climate_cls, patch(
+        "custom_components.edificio_elite.EliteInvoicesCoordinator",
+        return_value=invoices,
+    ) as invoices_cls:
+        result = await async_setup_entry(hass, entry)
+
+    assert result is True
+    client_cls.assert_called_once_with(
+        hass, email="test@example.com", password="secret"
+    )
+    assert entry.runtime_data.client is client_cls.return_value
+    assert entry.runtime_data.climate is climate
+    assert entry.runtime_data.invoices is invoices
+    climate_cls.assert_called_once_with(hass, client_cls.return_value, entry)
+    invoices_cls.assert_called_once_with(hass, client_cls.return_value, entry)
+    climate.async_config_entry_first_refresh.assert_awaited_once()
+    invoices.async_refresh.assert_awaited_once()
+    hass.config_entries.async_forward_entry_setups.assert_awaited_once_with(
+        entry, PLATFORMS
+    )
+
+
+async def test_setup_survives_invoice_refresh_failure(hass: HomeAssistant) -> None:
+    """A failed invoice refresh does not block setup."""
+    from custom_components.edificio_elite import async_setup_entry
+
+    entry = make_entry()
+    hass.config_entries.async_forward_entry_setups = AsyncMock(return_value=None)
+
+    climate = MagicMock()
+    climate.async_config_entry_first_refresh = AsyncMock()
+    invoices = MagicMock()
+
+    async def failed_refresh():
+        invoices.last_update_success = False
+
+    invoices.async_refresh = AsyncMock(side_effect=failed_refresh)
+
+    with patch(
+        "custom_components.edificio_elite.EliteApiClient"
+    ), patch(
+        "custom_components.edificio_elite.EliteClimateCoordinator",
+        return_value=climate,
     ), patch(
         "custom_components.edificio_elite.EliteInvoicesCoordinator",
         return_value=invoices,
@@ -41,24 +86,86 @@ async def test_setup_entry_wires_coordinators(hass: HomeAssistant) -> None:
         result = await async_setup_entry(hass, entry)
 
     assert result is True
-    stored = hass.data[DOMAIN]["entry-1"]
-    assert stored["client"] is client_cls.return_value
-    assert stored["climate"] is climate
-    assert stored["invoices"] is invoices
-    climate.async_config_entry_first_refresh.assert_awaited_once()
-    invoices.async_refresh.assert_awaited_once()
+    assert invoices.last_update_success is False
     hass.config_entries.async_forward_entry_setups.assert_awaited_once()
 
 
-async def test_unload_entry_removes_entry_data(hass: HomeAssistant) -> None:
-    """Unload removes the config entry data when platforms unload."""
+async def test_setup_fails_when_climate_refresh_fails(hass: HomeAssistant) -> None:
+    """A climate first-refresh failure blocks setup and platform forwarding."""
+    from custom_components.edificio_elite import async_setup_entry
+
+    entry = make_entry()
+    hass.config_entries.async_forward_entry_setups = AsyncMock(return_value=None)
+
+    climate = MagicMock()
+    climate.async_config_entry_first_refresh = AsyncMock(
+        side_effect=ConfigEntryNotReady("no data")
+    )
+
+    with patch(
+        "custom_components.edificio_elite.EliteApiClient"
+    ), patch(
+        "custom_components.edificio_elite.EliteClimateCoordinator",
+        return_value=climate,
+    ), patch(
+        "custom_components.edificio_elite.EliteInvoicesCoordinator",
+        return_value=MagicMock(),
+    ):
+        with pytest.raises(ConfigEntryNotReady):
+            await async_setup_entry(hass, entry)
+
+    hass.config_entries.async_forward_entry_setups.assert_not_awaited()
+
+
+async def test_unload_entry_unloads_platforms(hass: HomeAssistant) -> None:
+    """Unload delegates to the platform unloader."""
     from custom_components.edificio_elite import async_unload_entry
 
     entry = make_entry()
-    hass.data = {DOMAIN: {"entry-1": {"climate": MagicMock()}}}
     hass.config_entries.async_unload_platforms = AsyncMock(return_value=True)
 
     result = await async_unload_entry(hass, entry)
 
     assert result is True
-    assert "entry-1" not in hass.data[DOMAIN]
+    hass.config_entries.async_unload_platforms.assert_awaited_once_with(
+        entry, PLATFORMS
+    )
+
+
+async def test_sensor_setup_binds_invoice_entities(hass: HomeAssistant) -> None:
+    """The sensor platform creates 31 sensors, 12 of them on Facturación."""
+    from custom_components.edificio_elite import sensor
+
+    entry = make_entry()
+    entry.runtime_data = SimpleNamespace(climate=MagicMock(), invoices=MagicMock())
+
+    added = []
+    await sensor.async_setup_entry(hass, entry, added.extend)
+
+    assert len(added) == 31
+    invoice_entities = [
+        entity
+        for entity in added
+        if entity.unique_id.startswith("facturacion_")
+    ]
+    assert len(invoice_entities) == 12
+    assert all(
+        entity.coordinator is entry.runtime_data.invoices
+        for entity in invoice_entities
+    )
+
+
+async def test_binary_sensor_setup_uses_climate_coordinator(
+    hass: HomeAssistant,
+) -> None:
+    """The binary sensor platform creates 3 entities bound to climate."""
+    from custom_components.edificio_elite import binary_sensor
+
+    entry = make_entry()
+    entry.runtime_data = SimpleNamespace(climate=MagicMock(), invoices=MagicMock())
+
+    added = []
+    await binary_sensor.async_setup_entry(hass, entry, added.extend)
+
+    assert len(added) == 3
+    assert all(entity.coordinator is entry.runtime_data.climate for entity in added)
