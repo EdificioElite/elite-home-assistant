@@ -18,9 +18,10 @@ SAMPLE_DATA = {
 
 def make_coordinator(hass, return_value=None, side_effect=None):
     """Create a climate coordinator with a mocked API client."""
+    from custom_components.edificio_elite.api import EliteApiClient
     from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
 
-    client = MagicMock()
+    client = MagicMock(spec=EliteApiClient)
     if side_effect is not None:
         client.async_get = AsyncMock(side_effect=side_effect)
     else:
@@ -59,6 +60,13 @@ async def test_fetch_network_error_keeps_previous(hass):
     assert result["power_w"] == 800
 
 
+async def test_fetch_network_error_without_previous_raises(hass):
+    """A network error without previous data raises UpdateFailed."""
+    coord = make_coordinator(hass, side_effect=ClientError("Connection refused"))
+    with pytest.raises(UpdateFailed):
+        await coord._fetch_consumo_actual()
+
+
 async def test_fetch_update_failed_propagates(hass):
     """UpdateFailed from the client is not swallowed."""
     coord = make_coordinator(hass, side_effect=UpdateFailed("bad status"))
@@ -69,6 +77,12 @@ async def test_fetch_update_failed_propagates(hass):
 
 async def test_update_data_calls_fetch(hass):
     """_async_update_data delegates to _fetch_consumo_actual."""
+    from unittest.mock import patch
+
     coord = make_coordinator(hass, return_value=SAMPLE_DATA)
-    result = await coord._async_update_data()
+    with patch.object(
+        coord, "_fetch_consumo_actual", AsyncMock(return_value=SAMPLE_DATA)
+    ) as fetch:
+        result = await coord._async_update_data()
+    fetch.assert_awaited_once()
     assert result["power_w"] == 1200
