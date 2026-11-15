@@ -23,10 +23,13 @@ from .const import (
     ACS_SENSORS,
     AFS_SENSORS,
     CLIMATIZACION_SENSORS,
+    DASHBOARD_URL,
     DEVICE_ACS,
     DEVICE_AFS,
     DEVICE_CLIMATIZACION,
+    DEVICE_FACTURACION,
     DOMAIN,
+    FACTURACION_SENSORS,
 )
 from .coordinator import EliteClimateCoordinator
 
@@ -36,6 +39,7 @@ DEVICE_CLASS_MAP: dict[str | None, SensorDeviceClass | None] = {
     "temperature": SensorDeviceClass.TEMPERATURE,
     "water": SensorDeviceClass.WATER,
     "timestamp": SensorDeviceClass.TIMESTAMP,
+    "monetary": SensorDeviceClass.MONETARY,
     None: None,
 }
 
@@ -51,6 +55,7 @@ UNIT_MAP: dict[str | None, str | None] = {
     "W": UnitOfPower.WATT,
     "°C": UnitOfTemperature.CELSIUS,
     "m³": UnitOfVolume.CUBIC_METERS,
+    "EUR": "EUR",
     None: None,
 }
 
@@ -59,7 +64,9 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up Edificio Elite sensors."""
-    coordinator: EliteClimateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    entry_data = hass.data[DOMAIN][entry.entry_id]
+    coordinator: EliteClimateCoordinator = entry_data["climate"]
+    invoices_coordinator = entry_data["invoices"]
 
     entities: list[SensorEntity] = []
 
@@ -89,6 +96,16 @@ async def async_setup_entry(
                 coordinator=coordinator,
                 device_id=DEVICE_AFS,
                 device_name="Agua Fría Sanitaria",
+                sensor_def=sensor_def,
+            )
+        )
+
+    for sensor_def in FACTURACION_SENSORS:
+        entities.append(
+            EliteClimateSensor(
+                coordinator=invoices_coordinator,
+                device_id=DEVICE_FACTURACION,
+                device_name="Facturación",
                 sensor_def=sensor_def,
             )
         )
@@ -142,6 +159,22 @@ class EliteClimateSensor(SensorEntity):
             except (ValueError, TypeError):
                 return None
         return value
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return invoice detail attributes for the total invoice sensor."""
+        if not self._sensor_def.get("invoice_attributes"):
+            return None
+        data = self.coordinator.data or {}
+        return {
+            "id_factura": data.get("id_factura"),
+            "periodo": data.get("fecha_factura_inicio"),
+            "periodo_fin": data.get("fecha_factura_fin"),
+            "tiene_pdf": data.get("tiene_pdf"),
+            "num_facturas": data.get("num_facturas"),
+            "importe_variable_acs": data.get("importe_variable_acs"),
+            "dashboard_url": DASHBOARD_URL,
+        }
 
     @property
     def available(self) -> bool:
