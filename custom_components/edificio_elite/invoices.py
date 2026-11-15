@@ -1,6 +1,7 @@
 """Invoice coordinator for the Edificio Elite integration."""
 
 import logging
+import math
 from datetime import timedelta
 from typing import Any
 
@@ -27,11 +28,14 @@ NUMERIC_FIELDS = (
 
 
 def _to_float(value: Any) -> float | None:
-    """Convert a value to float, returning None when not possible."""
+    """Convert a value to a finite float, returning None otherwise."""
+    if isinstance(value, bool):
+        return None
     try:
-        return float(value)
+        number = float(value)
     except (TypeError, ValueError):
         return None
+    return number if math.isfinite(number) else None
 
 
 def build_invoice_data(invoices: list[dict]) -> dict:
@@ -46,7 +50,10 @@ def build_invoice_data(invoices: list[dict]) -> dict:
             latest[field] = _to_float(latest[field])
 
     latest["importe_acumulado"] = round(
-        sum(_to_float(invoice.get("importe_total")) or 0 for invoice in invoices),
+        sum(
+            (_to_float(invoice.get("importe_total")) or 0 for invoice in invoices),
+            0.0,
+        ),
         2,
     )
     latest["num_facturas"] = len(invoices)
