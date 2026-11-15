@@ -1,6 +1,6 @@
 """Tests for the Edificio Elite invoice sensors."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock
 
 from homeassistant.core import HomeAssistant
@@ -85,7 +85,7 @@ async def test_invoice_period_sensor_parses_timestamp(
     sensor = make_sensor(coordinator, sensor_def)
 
     assert sensor.native_value == datetime(
-        2026, 10, 31, tzinfo=timezone.utc
+        2026, 10, 31, tzinfo=UTC
     )
 
 

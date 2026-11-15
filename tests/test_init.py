@@ -110,9 +110,8 @@ async def test_setup_fails_when_climate_refresh_fails(hass: HomeAssistant) -> No
     ), patch(
         "custom_components.edificio_elite.EliteInvoicesCoordinator",
         return_value=MagicMock(),
-    ):
-        with pytest.raises(ConfigEntryNotReady):
-            await async_setup_entry(hass, entry)
+    ), pytest.raises(ConfigEntryNotReady):
+        await async_setup_entry(hass, entry)
 
     hass.config_entries.async_forward_entry_setups.assert_not_awaited()
 
