@@ -75,11 +75,21 @@ except (ValueError, TypeError):
     return None
 ```
 
-## HACS metadata
+## Marketplace / HACS metadata
 
-- `hacs.json` must be in repo root
-- `render_readme: true` tells HACS to render the README in the UI
-- The `icon.png` in the repo root is for HACS store listing (separate from HA's `brand/` requirement)
+Since Home Assistant 2026.11, HACS ships built into Home Assistant as the
+**Marketplace** integration. It reads the same catalog and the same `hacs.json`,
+so no repository structure changes are needed.
+
+- `hacs.json` must be in repo root and include `name`
+- `render_readme: true` tells the Marketplace/HACS to render the README in the UI
+- The Marketplace requires GitHub description, topics, enabled issues and
+  releases for catalog listing
+- The `brand/` folder provides the icon/logo shown by Home Assistant 2026.3+;
+  the root `icon.png` is kept for older HACS listings
+- README install instructions for GitHub-only flows should be wrapped in
+  `<!-- ha-marketplace:exclude-start -->` / `<!-- ha-marketplace:exclude-end -->`
+  so they are hidden on the Marketplace page
 
 ## Testing notes
 
