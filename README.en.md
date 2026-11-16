@@ -17,7 +17,7 @@ Home Assistant integration for residents of Edificio Elite. Monitors aerothermal
 - **34 entities (31 sensors + 3 binary sensors)** across four devices: Climate, DHW, Cold Water and Billing
 - **Automatic polling** every 5 minutes
 - **JWT authentication** with automatic token renewal
-- **HACS compatible** — install directly from the HACS store
+- **Marketplace and HACS compatible** — install from **Settings → Marketplace** (Home Assistant 2026.11+) or from HACS on older versions
 - **Config flow UI** — no YAML editing required
 
 ## Entities
@@ -82,7 +82,14 @@ No additional setup is required: it uses the integration credentials.
 
 ## Installation
 
-### Via HACS (recommended)
+### Via Marketplace (Home Assistant 2026.11 or newer)
+
+1. Go to **Settings** → **Marketplace**
+2. Search for "Edificio Elite" and install it
+3. Restart Home Assistant if prompted
+
+<!-- ha-marketplace:exclude-start -->
+### Via HACS (Home Assistant 2026.10 or older)
 
 1. Open HACS in Home Assistant
 2. Go to **Integrations** → **⋮** → **Custom repositories**
@@ -93,6 +100,7 @@ No additional setup is required: it uses the integration credentials.
 ### Manual
 
 Copy the `custom_components/edificio_elite/` folder into your Home Assistant `custom_components/` directory.
+<!-- ha-marketplace:exclude-end -->
 
 ## Configuration
 
