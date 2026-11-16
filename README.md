@@ -17,7 +17,7 @@ Integración de Home Assistant para residentes del Edificio Elite. Monitoriza en
 - **34 entidades (31 sensores + 3 sensores binarios)** repartidas en cuatro dispositivos: Climatización, Agua Caliente Sanitaria, Agua Fría Sanitaria y Facturación
 - **Actualización automática** cada 5 minutos
 - **Autenticación JWT** con renovación automática de token
-- **Compatible con HACS** — instálalo directamente desde la tienda de HACS
+- **Compatible con Marketplace y HACS** — instálalo desde **Ajustes → Marketplace** (Home Assistant 2026.11+) o desde HACS en versiones anteriores
 - **Config flow UI** — no es necesario editar YAML
 
 ## Entidades
@@ -82,7 +82,14 @@ No requiere configuración adicional: usa las mismas credenciales de la integrac
 
 ## Instalación
 
-### Mediante HACS (recomendado)
+### Mediante Marketplace (Home Assistant 2026.11 o superior)
+
+1. Ve a **Ajustes** → **Marketplace**
+2. Busca "Edificio Elite" e instálala
+3. Reinicia Home Assistant si se solicita
+
+<!-- ha-marketplace:exclude-start -->
+### Mediante HACS (Home Assistant 2026.10 o anterior)
 
 1. Abre HACS en Home Assistant
 2. Ve a **Integraciones** → **⋮** → **Repositorios personalizados**
@@ -93,6 +100,7 @@ No requiere configuración adicional: usa las mismas credenciales de la integrac
 ### Manual
 
 Copia la carpeta `custom_components/edificio_elite/` en el directorio `custom_components/` de tu Home Assistant.
+<!-- ha-marketplace:exclude-end -->
 
 ## Configuración
 

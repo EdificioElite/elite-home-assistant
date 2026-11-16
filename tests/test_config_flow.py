@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock, patch
 
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
-from homeassistant.core import HomeAssistant
 
 
 class MockResponse:
@@ -21,7 +20,7 @@ class MockResponse:
         pass
 
 
-async def test_config_flow_success(hass: HomeAssistant) -> None:
+async def test_config_flow_success(mock_hass: MagicMock) -> None:
     """Test config flow with valid credentials."""
     from custom_components.edificio_elite.config_flow import EliteClimateConfigFlow
 
@@ -29,14 +28,14 @@ async def test_config_flow_success(hass: HomeAssistant) -> None:
     mock_session = MagicMock()
     mock_session.post.return_value = mock_resp
 
-    hass.config_entries.async_entry_for_domain_unique_id.return_value = None
+    mock_hass.config_entries.async_entry_for_domain_unique_id.return_value = None
 
     with patch(
         "custom_components.edificio_elite.config_flow.async_get_clientsession",
         return_value=mock_session,
     ):
         flow = EliteClimateConfigFlow()
-        flow.hass = hass
+        flow.hass = mock_hass
         flow.context = {}
 
         result = await flow.async_step_user(
@@ -53,7 +52,7 @@ async def test_config_flow_success(hass: HomeAssistant) -> None:
     assert kwargs["json"]["source"] == "home-assistant"
 
 
-async def test_config_flow_invalid_auth(hass: HomeAssistant) -> None:
+async def test_config_flow_invalid_auth(mock_hass: MagicMock) -> None:
     """Test config flow with invalid credentials."""
     from custom_components.edificio_elite.config_flow import EliteClimateConfigFlow
 
@@ -66,7 +65,7 @@ async def test_config_flow_invalid_auth(hass: HomeAssistant) -> None:
         return_value=mock_session,
     ):
         flow = EliteClimateConfigFlow()
-        flow.hass = hass
+        flow.hass = mock_hass
 
         result = await flow.async_step_user(
             {CONF_EMAIL: "bad@example.com", CONF_PASSWORD: "wrong"}

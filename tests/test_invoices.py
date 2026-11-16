@@ -32,7 +32,7 @@ INVOICES = [
 ]
 
 
-def make_coordinator(hass, return_value=None, side_effect=None):
+def make_coordinator(mock_hass, return_value=None, side_effect=None):
     """Create an invoices coordinator with a mocked API client."""
     from custom_components.edificio_elite.invoices import EliteInvoicesCoordinator
 
@@ -41,7 +41,7 @@ def make_coordinator(hass, return_value=None, side_effect=None):
         client.async_get = AsyncMock(side_effect=side_effect)
     else:
         client.async_get = AsyncMock(return_value=return_value)
-    return EliteInvoicesCoordinator(hass, client)
+    return EliteInvoicesCoordinator(mock_hass, client)
 
 
 async def test_build_invoice_data_latest_and_sum():
@@ -78,32 +78,32 @@ async def test_build_invoice_data_empty():
     assert data.get("importe_total") is None
 
 
-async def test_refresh_success(hass):
+async def test_refresh_success(mock_hass):
     """A successful refresh builds the invoice data."""
-    coord = make_coordinator(hass, return_value=INVOICES)
+    coord = make_coordinator(mock_hass, return_value=INVOICES)
     result = await coord._async_update_data()
     assert result["id_factura"] == "2026-10-01"
     assert result["importe_acumulado"] == 187.45
 
 
-async def test_refresh_network_error_keeps_previous(hass):
+async def test_refresh_network_error_keeps_previous(mock_hass):
     """A network error keeps the previous data."""
-    coord = make_coordinator(hass, side_effect=ClientError("boom"))
+    coord = make_coordinator(mock_hass, side_effect=ClientError("boom"))
     coord.data = {"importe_total": 50.0}
     result = await coord._async_update_data()
     assert result["importe_total"] == 50.0
 
 
-async def test_refresh_network_error_without_previous_raises(hass):
+async def test_refresh_network_error_without_previous_raises(mock_hass):
     """A network error without previous data raises UpdateFailed."""
-    coord = make_coordinator(hass, side_effect=ClientError("boom"))
+    coord = make_coordinator(mock_hass, side_effect=ClientError("boom"))
     with pytest.raises(UpdateFailed):
         await coord._async_update_data()
 
 
-async def test_refresh_unexpected_response_keeps_previous(hass):
+async def test_refresh_unexpected_response_keeps_previous(mock_hass):
     """A non-list response keeps the previous data."""
-    coord = make_coordinator(hass, return_value={"not": "a list"})
+    coord = make_coordinator(mock_hass, return_value={"not": "a list"})
     coord.data = {"importe_total": 50.0}
     result = await coord._async_update_data()
     assert result["importe_total"] == 50.0
@@ -147,17 +147,17 @@ async def test_build_invoice_data_uses_first_element():
     assert data["id_factura"] == "new"
 
 
-async def test_refresh_update_failed_propagates(hass):
+async def test_refresh_update_failed_propagates(mock_hass):
     """UpdateFailed from the client is not swallowed."""
-    coord = make_coordinator(hass, side_effect=UpdateFailed("bad status"))
+    coord = make_coordinator(mock_hass, side_effect=UpdateFailed("bad status"))
     coord.data = {"importe_total": 50.0}
     with pytest.raises(UpdateFailed):
         await coord._async_update_data()
 
 
-async def test_refresh_unexpected_response_without_previous_raises(hass):
+async def test_refresh_unexpected_response_without_previous_raises(mock_hass):
     """A non-list response without previous data raises UpdateFailed."""
-    coord = make_coordinator(hass, return_value={"not": "a list"})
+    coord = make_coordinator(mock_hass, return_value={"not": "a list"})
     with pytest.raises(UpdateFailed):
         await coord._async_update_data()
 
@@ -172,12 +172,12 @@ async def test_build_invoice_data_ignores_non_dict_elements():
     assert data["importe_acumulado"] == 5.0
 
 
-async def test_invoices_coordinator_uses_config_entry(hass):
+async def test_invoices_coordinator_uses_config_entry(mock_hass):
     """The invoices coordinator stores the config entry explicitly."""
     from custom_components.edificio_elite.invoices import EliteInvoicesCoordinator
 
     client = MagicMock()
     client.async_get = AsyncMock(return_value=INVOICES)
     entry = MagicMock()
-    coord = EliteInvoicesCoordinator(hass, client, entry)
+    coord = EliteInvoicesCoordinator(mock_hass, client, entry)
     assert coord.config_entry is entry

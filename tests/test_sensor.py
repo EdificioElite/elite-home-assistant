@@ -2,10 +2,8 @@
 
 from unittest.mock import MagicMock
 
-from homeassistant.core import HomeAssistant
 
-
-async def test_sensor_values(hass: HomeAssistant) -> None:
+async def test_sensor_values(mock_hass: MagicMock) -> None:
     """Test that sensors return correct values from coordinator data."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
@@ -40,7 +38,7 @@ async def test_sensor_values(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_sensor_null_data(hass: HomeAssistant) -> None:
+async def test_sensor_null_data(mock_hass: MagicMock) -> None:
     """Test sensor returns None when coordinator data is None."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
@@ -69,7 +67,7 @@ async def test_sensor_null_data(hass: HomeAssistant) -> None:
     assert sensor.native_value is None
 
 
-async def test_last_update_timestamp(hass: HomeAssistant) -> None:
+async def test_last_update_timestamp(mock_hass: MagicMock) -> None:
     """Test the last_update sensor parses timestamp correctly."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
@@ -101,7 +99,7 @@ async def test_last_update_timestamp(hass: HomeAssistant) -> None:
     assert sensor.native_value.year == 2026
 
 
-async def test_modo_sensor(hass: HomeAssistant) -> None:
+async def test_modo_sensor(mock_hass: MagicMock) -> None:
     """Test the modo sensor returns the mode string from the API."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
@@ -131,7 +129,7 @@ async def test_modo_sensor(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_computed_sensor(hass: HomeAssistant) -> None:
+async def test_computed_sensor(mock_hass: MagicMock) -> None:
     """Test a computed sensor returns the correct derived value."""
     from custom_components.edificio_elite.const import ACS_KWH_PER_M3, ACS_SENSORS
     from custom_components.edificio_elite.sensor import EliteClimateSensor
@@ -154,7 +152,7 @@ async def test_computed_sensor(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> None:
+async def test_computed_sensor_none_when_field_missing(mock_hass: MagicMock) -> None:
     """Test a computed sensor returns None when the source field is missing."""
     from custom_components.edificio_elite.const import ACS_SENSORS
     from custom_components.edificio_elite.sensor import EliteClimateSensor
@@ -176,7 +174,7 @@ async def test_computed_sensor_none_when_field_missing(hass: HomeAssistant) -> N
     assert sensor.native_value is None
 
 
-async def test_afs_sensor_values(hass: HomeAssistant) -> None:
+async def test_afs_sensor_values(mock_hass: MagicMock) -> None:
     """Test that AFS sensors return correct values from coordinator data."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
@@ -210,7 +208,7 @@ async def test_afs_sensor_values(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_afs_sensor_null_data(hass: HomeAssistant) -> None:
+async def test_afs_sensor_null_data(mock_hass: MagicMock) -> None:
     """Test AFS sensor returns None when coordinator data is None."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
@@ -239,7 +237,7 @@ async def test_afs_sensor_null_data(hass: HomeAssistant) -> None:
     assert sensor.native_value is None
 
 
-async def test_afs_sensor_device_info(hass: HomeAssistant) -> None:
+async def test_afs_sensor_device_info(mock_hass: MagicMock) -> None:
     """Test AFS sensor has the correct device info."""
     from custom_components.edificio_elite.sensor import EliteClimateSensor
 
