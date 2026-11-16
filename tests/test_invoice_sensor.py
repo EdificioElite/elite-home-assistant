@@ -3,8 +3,6 @@
 from datetime import UTC, datetime
 from unittest.mock import MagicMock
 
-from homeassistant.core import HomeAssistant
-
 
 def make_sensor(coordinator, sensor_def):
     """Create an invoice sensor with a mocked coordinator."""
@@ -18,7 +16,7 @@ def make_sensor(coordinator, sensor_def):
     )
 
 
-async def test_invoice_monetary_sensor(hass: HomeAssistant) -> None:
+async def test_invoice_monetary_sensor(mock_hass: MagicMock) -> None:
     """The total invoice sensor exposes value and detail attributes."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
 
@@ -49,7 +47,7 @@ async def test_invoice_monetary_sensor(hass: HomeAssistant) -> None:
 
 
 async def test_invoice_attributes_omit_missing_values(
-    hass: HomeAssistant,
+    mock_hass: MagicMock,
 ) -> None:
     """Missing invoice details are not exposed as None attributes."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
@@ -71,7 +69,7 @@ async def test_invoice_attributes_omit_missing_values(
 
 
 async def test_invoice_period_sensor_parses_timestamp(
-    hass: HomeAssistant,
+    mock_hass: MagicMock,
 ) -> None:
     """Period-end sensor returns a datetime."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
@@ -89,7 +87,7 @@ async def test_invoice_period_sensor_parses_timestamp(
     )
 
 
-async def test_invoice_sensor_empty_data(hass: HomeAssistant) -> None:
+async def test_invoice_sensor_empty_data(mock_hass: MagicMock) -> None:
     """An empty invoice list yields zero accumulated and no failure."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
     from custom_components.edificio_elite.invoices import build_invoice_data
@@ -109,7 +107,7 @@ async def test_invoice_sensor_empty_data(hass: HomeAssistant) -> None:
 
 
 async def test_non_invoice_sensor_has_no_invoice_attributes(
-    hass: HomeAssistant,
+    mock_hass: MagicMock,
 ) -> None:
     """Only the total invoice sensor carries invoice detail attributes."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
@@ -126,7 +124,7 @@ async def test_non_invoice_sensor_has_no_invoice_attributes(
     assert sensor.extra_state_attributes is None
 
 
-async def test_invoice_sensor_device_info(hass: HomeAssistant) -> None:
+async def test_invoice_sensor_device_info(mock_hass: MagicMock) -> None:
     """Invoice sensors belong to the Facturación device."""
     from custom_components.edificio_elite.const import (
         DEVICE_FACTURACION,
@@ -149,7 +147,7 @@ async def test_invoice_sensor_device_info(hass: HomeAssistant) -> None:
 
 
 async def test_invoice_period_sensor_handles_bad_timestamp(
-    hass: HomeAssistant,
+    mock_hass: MagicMock,
 ) -> None:
     """A malformed timestamp yields None instead of raising."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
@@ -168,7 +166,7 @@ async def test_invoice_period_sensor_handles_bad_timestamp(
 
 
 async def test_invoice_sensor_unavailable_on_failed_update(
-    hass: HomeAssistant,
+    mock_hass: MagicMock,
 ) -> None:
     """Invoice sensors become unavailable when the refresh fails."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
@@ -186,7 +184,7 @@ async def test_invoice_sensor_unavailable_on_failed_update(
     assert sensor.available is False
 
 
-async def test_facturacion_sensor_metadata(hass: HomeAssistant) -> None:
+async def test_facturacion_sensor_metadata(mock_hass: MagicMock) -> None:
     """Invoice sensors expose the expected device/state class and unit."""
     from homeassistant.components.sensor import (
         SensorDeviceClass,
@@ -228,7 +226,7 @@ async def test_facturacion_sensor_metadata(hass: HomeAssistant) -> None:
 
 
 async def test_invoice_attributes_when_data_is_none(
-    hass: HomeAssistant,
+    mock_hass: MagicMock,
 ) -> None:
     """The total invoice sensor only exposes the dashboard link without data."""
     from custom_components.edificio_elite.const import FACTURACION_SENSORS
