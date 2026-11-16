@@ -16,7 +16,7 @@ SAMPLE_DATA = {
 }
 
 
-def make_coordinator(hass, return_value=None, side_effect=None):
+def make_coordinator(mock_hass, return_value=None, side_effect=None):
     """Create a climate coordinator with a mocked API client."""
     from custom_components.edificio_elite.api import EliteApiClient
     from custom_components.edificio_elite.coordinator import EliteClimateCoordinator
@@ -26,60 +26,60 @@ def make_coordinator(hass, return_value=None, side_effect=None):
         client.async_get = AsyncMock(side_effect=side_effect)
     else:
         client.async_get = AsyncMock(return_value=return_value)
-    return EliteClimateCoordinator(hass, client)
+    return EliteClimateCoordinator(mock_hass, client)
 
 
-async def test_fetch_consumo_actual_success(hass):
+async def test_fetch_consumo_actual_success(mock_hass):
     """The coordinator returns the API payload."""
-    coord = make_coordinator(hass, return_value=SAMPLE_DATA)
+    coord = make_coordinator(mock_hass, return_value=SAMPLE_DATA)
     result = await coord._fetch_consumo_actual()
     assert result["kwh_calor"] == 1.234
     assert result["power_w"] == 1200
 
 
-async def test_fetch_null_data_keeps_previous(hass):
+async def test_fetch_null_data_keeps_previous(mock_hass):
     """A null payload keeps the previous data."""
-    coord = make_coordinator(hass, return_value=None)
+    coord = make_coordinator(mock_hass, return_value=None)
     coord.data = {"power_w": 500}
     result = await coord._fetch_consumo_actual()
     assert result["power_w"] == 500
 
 
-async def test_fetch_null_data_without_previous_raises(hass):
+async def test_fetch_null_data_without_previous_raises(mock_hass):
     """A null payload without previous data raises UpdateFailed."""
-    coord = make_coordinator(hass, return_value=None)
+    coord = make_coordinator(mock_hass, return_value=None)
     with pytest.raises(UpdateFailed):
         await coord._fetch_consumo_actual()
 
 
-async def test_fetch_network_error_keeps_previous(hass):
+async def test_fetch_network_error_keeps_previous(mock_hass):
     """A network error keeps the previous data."""
-    coord = make_coordinator(hass, side_effect=ClientError("Connection refused"))
+    coord = make_coordinator(mock_hass, side_effect=ClientError("Connection refused"))
     coord.data = {"power_w": 800}
     result = await coord._fetch_consumo_actual()
     assert result["power_w"] == 800
 
 
-async def test_fetch_network_error_without_previous_raises(hass):
+async def test_fetch_network_error_without_previous_raises(mock_hass):
     """A network error without previous data raises UpdateFailed."""
-    coord = make_coordinator(hass, side_effect=ClientError("Connection refused"))
+    coord = make_coordinator(mock_hass, side_effect=ClientError("Connection refused"))
     with pytest.raises(UpdateFailed):
         await coord._fetch_consumo_actual()
 
 
-async def test_fetch_update_failed_propagates(hass):
+async def test_fetch_update_failed_propagates(mock_hass):
     """UpdateFailed from the client is not swallowed."""
-    coord = make_coordinator(hass, side_effect=UpdateFailed("bad status"))
+    coord = make_coordinator(mock_hass, side_effect=UpdateFailed("bad status"))
     coord.data = {"power_w": 800}
     with pytest.raises(UpdateFailed):
         await coord._fetch_consumo_actual()
 
 
-async def test_update_data_calls_fetch(hass):
+async def test_update_data_calls_fetch(mock_hass):
     """_async_update_data delegates to _fetch_consumo_actual."""
     from unittest.mock import patch
 
-    coord = make_coordinator(hass, return_value=SAMPLE_DATA)
+    coord = make_coordinator(mock_hass, return_value=SAMPLE_DATA)
     with patch.object(
         coord, "_fetch_consumo_actual", AsyncMock(return_value=SAMPLE_DATA)
     ) as fetch:
@@ -88,7 +88,7 @@ async def test_update_data_calls_fetch(hass):
     assert result["power_w"] == 1200
 
 
-async def test_coordinator_uses_config_entry(hass):
+async def test_coordinator_uses_config_entry(mock_hass):
     """The coordinator stores the config entry explicitly."""
     entry = MagicMock()
 
@@ -96,5 +96,5 @@ async def test_coordinator_uses_config_entry(hass):
 
     client = MagicMock()
     client.async_get = AsyncMock(return_value=SAMPLE_DATA)
-    coord = EliteClimateCoordinator(hass, client, entry)
+    coord = EliteClimateCoordinator(mock_hass, client, entry)
     assert coord.config_entry is entry

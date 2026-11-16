@@ -2,10 +2,8 @@
 
 from unittest.mock import MagicMock
 
-from homeassistant.core import HomeAssistant
 
-
-async def test_is_running_true(hass: HomeAssistant) -> None:
+async def test_is_running_true(mock_hass: MagicMock) -> None:
     """Test binary sensor is on when power > 0."""
     from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
@@ -20,7 +18,7 @@ async def test_is_running_true(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_is_running_false(hass: HomeAssistant) -> None:
+async def test_is_running_false(mock_hass: MagicMock) -> None:
     """Test binary sensor is off when power == 0."""
     from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
@@ -34,7 +32,7 @@ async def test_is_running_false(hass: HomeAssistant) -> None:
     assert sensor.is_on is False
 
 
-async def test_is_running_null_when_no_data(hass: HomeAssistant) -> None:
+async def test_is_running_null_when_no_data(mock_hass: MagicMock) -> None:
     """Test binary sensor is None when data is missing."""
     from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
@@ -48,7 +46,7 @@ async def test_is_running_null_when_no_data(hass: HomeAssistant) -> None:
     assert sensor.is_on is None
 
 
-async def test_is_running_null_when_power_none(hass: HomeAssistant) -> None:
+async def test_is_running_null_when_power_none(mock_hass: MagicMock) -> None:
     """Test binary sensor is None when power_w is None."""
     from custom_components.edificio_elite.binary_sensor import EliteClimateRunningSensor
 
@@ -62,7 +60,7 @@ async def test_is_running_null_when_power_none(hass: HomeAssistant) -> None:
     assert sensor.is_on is None
 
 
-async def test_modo_calefaccion_activado_true(hass: HomeAssistant) -> None:
+async def test_modo_calefaccion_activado_true(mock_hass: MagicMock) -> None:
     """Test modo_calefaccion_activado binary sensor is on when heating mode active."""
     from custom_components.edificio_elite.binary_sensor import EliteModeBinarySensor
 
@@ -83,7 +81,7 @@ async def test_modo_calefaccion_activado_true(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_modo_calefaccion_activado_false(hass: HomeAssistant) -> None:
+async def test_modo_calefaccion_activado_false(mock_hass: MagicMock) -> None:
     """Test modo_calefaccion_activado binary sensor is off when heating mode inactive."""
     from custom_components.edificio_elite.binary_sensor import EliteModeBinarySensor
 
@@ -103,7 +101,7 @@ async def test_modo_calefaccion_activado_false(hass: HomeAssistant) -> None:
     assert sensor.is_on is False
 
 
-async def test_modo_refrigeracion_activado_true(hass: HomeAssistant) -> None:
+async def test_modo_refrigeracion_activado_true(mock_hass: MagicMock) -> None:
     """Test modo_refrigeracion_activado binary sensor is on when cooling mode active."""
     from custom_components.edificio_elite.binary_sensor import EliteModeBinarySensor
 
@@ -124,7 +122,7 @@ async def test_modo_refrigeracion_activado_true(hass: HomeAssistant) -> None:
     assert sensor.available is True
 
 
-async def test_modo_sensor_null_when_no_data(hass: HomeAssistant) -> None:
+async def test_modo_sensor_null_when_no_data(mock_hass: MagicMock) -> None:
     """Test mode binary sensor returns None when data is missing."""
     from custom_components.edificio_elite.binary_sensor import EliteModeBinarySensor
 
