@@ -7,8 +7,8 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/EdificioElite/elite-home-assistant",
-  "issue_tracker": "https://github.com/EdificioElite/elite-home-assistant/issues",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/EdificioElite/elite-home-assistant/issues",
   "requirements": [],
   "version": "1.0.0"
 }
