@@ -18,17 +18,22 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
     ACS_SENSORS,
     AFS_SENSORS,
     CLIMATIZACION_SENSORS,
+    DASHBOARD_URL,
     DEVICE_ACS,
     DEVICE_AFS,
     DEVICE_CLIMATIZACION,
+    DEVICE_FACTURACION,
     DOMAIN,
+    FACTURACION_SENSORS,
 )
 from .coordinator import EliteClimateCoordinator
+from .invoices import EliteInvoicesCoordinator
 
 DEVICE_CLASS_MAP: dict[str | None, SensorDeviceClass | None] = {
     "energy": SensorDeviceClass.ENERGY,
@@ -36,6 +41,7 @@ DEVICE_CLASS_MAP: dict[str | None, SensorDeviceClass | None] = {
     "temperature": SensorDeviceClass.TEMPERATURE,
     "water": SensorDeviceClass.WATER,
     "timestamp": SensorDeviceClass.TIMESTAMP,
+    "monetary": SensorDeviceClass.MONETARY,
     None: None,
 }
 
@@ -51,6 +57,7 @@ UNIT_MAP: dict[str | None, str | None] = {
     "W": UnitOfPower.WATT,
     "°C": UnitOfTemperature.CELSIUS,
     "m³": UnitOfVolume.CUBIC_METERS,
+    "EUR": "EUR",
     None: None,
 }
 
@@ -59,7 +66,8 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up Edificio Elite sensors."""
-    coordinator: EliteClimateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: EliteClimateCoordinator = entry.runtime_data.climate
+    invoices_coordinator: EliteInvoicesCoordinator = entry.runtime_data.invoices
 
     entities: list[SensorEntity] = []
 
@@ -93,6 +101,16 @@ async def async_setup_entry(
             )
         )
 
+    for sensor_def in FACTURACION_SENSORS:
+        entities.append(
+            EliteClimateSensor(
+                coordinator=invoices_coordinator,
+                device_id=DEVICE_FACTURACION,
+                device_name="Facturación",
+                sensor_def=sensor_def,
+            )
+        )
+
     async_add_entities(entities)
 
 
@@ -104,7 +122,7 @@ class EliteClimateSensor(SensorEntity):
 
     def __init__(
         self,
-        coordinator: EliteClimateCoordinator,
+        coordinator: DataUpdateCoordinator[dict],
         device_id: str,
         device_name: str,
         sensor_def: dict[str, Any],
@@ -138,10 +156,31 @@ class EliteClimateSensor(SensorEntity):
         value = self.coordinator.data.get(field)
         if self._sensor_def["device_class"] == "timestamp" and value:
             try:
-                return datetime.fromisoformat(value.replace("Z", "+00:00"))
+                return datetime.fromisoformat(value)
             except (ValueError, TypeError):
                 return None
         return value
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return invoice detail attributes for the total invoice sensor."""
+        if not self._sensor_def.get("invoice_attributes"):
+            return None
+        data = self.coordinator.data or {}
+        attributes = {
+            key: value
+            for key, value in {
+                "id_factura": data.get("id_factura"),
+                "periodo": data.get("fecha_factura_inicio"),
+                "periodo_fin": data.get("fecha_factura_fin"),
+                "tiene_pdf": data.get("tiene_pdf"),
+                "num_facturas": data.get("num_facturas"),
+                "importe_variable_acs": data.get("importe_variable_acs"),
+            }.items()
+            if value is not None
+        }
+        attributes["dashboard_url"] = DASHBOARD_URL
+        return attributes
 
     @property
     def available(self) -> bool:
